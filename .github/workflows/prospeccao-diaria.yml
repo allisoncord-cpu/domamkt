@@ -1,0 +1,88 @@
+name: Prospecção diária de leads
+
+on:
+  schedule:
+    # Todos os dias às 07:17 no horário de Brasília (10:17 UTC).
+    - cron: "17 10 * * *"
+  workflow_dispatch:
+    inputs:
+      quantidade:
+        description: "Quantidade de leads (vazio = valor do config.yaml)"
+        required: false
+      nicho:
+        description: "Nicho específico (vazio = rodízio automático)"
+        required: false
+      cidade:
+        description: "Cidade específica, ex.: Curitiba - PR (vazio = rodízio automático)"
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: prospeccao
+  cancel-in-progress: false
+
+jobs:
+  prospectar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      TZ: America/Sao_Paulo
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Conferir chave da API
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::error::Cadastre o segredo ANTHROPIC_API_KEY em Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+
+      - name: Rodar o agente de prospecção
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}
+          QUANTIDADE: ${{ inputs.quantidade }}
+          NICHO: ${{ inputs.nicho }}
+          CIDADE: ${{ inputs.cidade }}
+        run: |
+          args=()
+          if [ -n "$QUANTIDADE" ]; then args+=(--quantidade "$QUANTIDADE"); fi
+          if [ -n "$NICHO" ]; then args+=(--nicho "$NICHO"); fi
+          if [ -n "$CIDADE" ]; then args+=(--cidade "$CIDADE"); fi
+          python -m prospector "${args[@]}"
+
+      - name: Salvar leads no repositório
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p leads
+          git add leads data
+          if git diff --cached --quiet; then
+            echo "Nada novo para salvar."
+            exit 0
+          fi
+          git commit -m "Leads do dia $(date +%F)"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+
+      - name: Anexar relatório à execução
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: leads-${{ github.run_id }}
+          path: leads/
+          if-no-files-found: ignore
+          retention-days: 30

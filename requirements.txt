@@ -1,0 +1,4 @@
+anthropic>=1.9,<2
+pydantic>=2.7,<3
+PyYAML>=6.0,<7
+requests>=2.31,<3

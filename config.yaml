@@ -1,0 +1,92 @@
+# =============================================================================
+# Configuração do Agente de Prospecção da Doma
+# Edite este arquivo para mudar nichos, cidades, quantidade de leads e o jeito
+# que o agente apresenta a agência. Não precisa mexer no código.
+# =============================================================================
+
+agencia:
+  nome: "Doma"
+  descricao: >-
+    Agência de marketing 360°: cuidamos da estratégia, do conteúdo, das redes
+    sociais, do tráfego pago, do site e da marca, tudo integrado em um só time.
+  # TODO: ajuste para a cidade/região onde a Doma atende presencialmente.
+  cidade_base: "Brasil"
+  servicos:
+    - "Estratégia e planejamento de marketing"
+    - "Gestão de redes sociais (Instagram, Facebook, TikTok, LinkedIn)"
+    - "Produção de conteúdo (copy, design, fotos, vídeos e reels)"
+    - "Tráfego pago (Meta Ads, Google Ads, TikTok Ads)"
+    - "Criação e otimização de sites e landing pages"
+    - "SEO e Google Meu Negócio (perfil da empresa no Google)"
+    - "Branding e identidade visual"
+    - "E-mail marketing, CRM e automação de WhatsApp"
+    - "Gestão de reputação e avaliações online"
+  diferenciais:
+    - "Time completo (estratégia, criação, mídia e tecnologia) em um só lugar"
+    - "Planejamento mensal com metas e relatório de resultados"
+    - "Atendimento próximo, com reuniões de alinhamento"
+  tom_de_voz: "próximo, consultivo e direto; sem jargão e sem parecer spam"
+  # Quem assina as mensagens de abordagem.
+  assinatura: "Equipe Doma"
+  # Oferta de entrada usada nas mensagens (ex.: diagnóstico gratuito).
+  oferta_de_entrada: "um diagnóstico gratuito de 20 minutos da presença digital da empresa"
+
+prospeccao:
+  # Quantos leads analisados o agente entrega por dia.
+  leads_por_dia: 10
+  # Quantas combinações nicho x cidade são usadas por dia (os leads do dia são
+  # divididos entre elas). O agente faz rodízio automático entre todas as
+  # combinações ao longo dos dias.
+  segmentos_por_dia: 2
+
+  # TODO: troque pelas cidades/regiões onde a Doma quer clientes.
+  cidades:
+    - "São Paulo - SP"
+    - "Campinas - SP"
+    - "Curitiba - PR"
+    - "Belo Horizonte - MG"
+
+  # Nichos que costumam ter verba e dependem de marketing local.
+  nichos:
+    - "clínicas de estética"
+    - "clínicas odontológicas"
+    - "restaurantes e hamburguerias"
+    - "academias e estúdios de pilates"
+    - "imobiliárias"
+    - "escritórios de advocacia"
+    - "lojas de móveis planejados"
+    - "pet shops e clínicas veterinárias"
+    - "escolas de idiomas e cursos livres"
+    - "construtoras e incorporadoras"
+
+  # Perfil de cliente ideal: o agente usa isso para escolher quem vale a pena.
+  perfil_ideal:
+    - "Empresa ativa, com endereço/atendimento na região e pelo menos alguns anos de mercado"
+    - "Estrutura para investir em marketing (equipe, mais de uma unidade, ticket médio relevante)"
+    - "Presença digital fraca ou mal aproveitada: site ruim ou inexistente, Instagram parado, poucas avaliações, sem anúncios"
+  evitar:
+    - "Grandes redes e franquias nacionais (normalmente já têm agência)"
+    - "Microempreendedores sem estrutura mínima para contratar uma agência"
+    - "Órgãos públicos, ONGs e empresas fechadas/inativas"
+    - "Outras agências de marketing"
+
+modelo:
+  # Modelo do Claude usado pelo agente. Precisa suportar as ferramentas de
+  # busca/leitura web mais recentes (Claude Opus 5.5 / Sonnet 5.5 ou superiores).
+  nome: "claude-opus-5-5"
+  # Profundidade de raciocínio: low | medium | high | xhigh | max
+  esforco_descoberta: "high"
+  esforco_pesquisa: "high"
+  esforco_analise: "high"
+  # Limites de uso das ferramentas web (controlam custo e tempo).
+  max_buscas_descoberta: 15
+  max_buscas_por_lead: 12
+  max_leituras_por_lead: 8
+  # Quantos leads são pesquisados ao mesmo tempo.
+  paralelismo: 3
+
+saida:
+  pasta_leads: "leads"
+  arquivo_historico: "data/historico.json"
+  # Depois de quantos dias uma empresa pode voltar a aparecer como lead.
+  dias_para_reprospectar: 120
