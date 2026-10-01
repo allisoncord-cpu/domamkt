@@ -1,0 +1,745 @@
+<title>Arena Copy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: barra lateral fixa de navegação + área principal em grade; vira barra superior rolável no celular.
+   Mundo visual: placas de metal (bronze → lenda), placar de estádio, números de mesa de operação. */
+:root {
+  --bg: #eceff2;
+  --surface: #ffffff;
+  --surface-2: #f5f7f9;
+  --ink: #131a24;
+  --muted: #5d6877;
+  --line: #d9dee5;
+  --navy: #14233a;
+  --navy-ink: #e9eef6;
+  --gold: #a9741a;
+  --gold-soft: #f6ead2;
+  --up: #12804c;
+  --up-soft: #e1f3e9;
+  --down: #c13d2c;
+  --down-soft: #fbe6e2;
+  --chart-line: #14233a;
+  --chart-fill: rgba(20,35,58,.10);
+  --chart-grid: #e3e7ec;
+  --f-display: "Saira Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Figtree", "Segoe UI", system-ui, sans-serif;
+  --f-num: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c1117; --surface: #141b24; --surface-2: #19222d; --ink: #e7ecf2; --muted: #93a0b0; --line: #26313e;
+    --navy: #0f1a2a; --navy-ink: #e9eef6; --gold: #e2b356; --gold-soft: #3a2e17;
+    --up: #3ccf88; --up-soft: #12291e; --down: #ff7a66; --down-soft: #3a1c18;
+    --chart-line: #e2b356; --chart-fill: rgba(226,179,86,.14); --chart-grid: #222c38;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c1117; --surface: #141b24; --surface-2: #19222d; --ink: #e7ecf2; --muted: #93a0b0; --line: #26313e;
+  --navy: #0f1a2a; --navy-ink: #e9eef6; --gold: #e2b356; --gold-soft: #3a2e17;
+  --up: #3ccf88; --up-soft: #12291e; --down: #ff7a66; --down-soft: #3a1c18;
+  --chart-line: #e2b356; --chart-fill: rgba(226,179,86,.14); --chart-grid: #222c38;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body); }
+button, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 6px; }
+.num { font-family: var(--f-num); font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.up { color: var(--up); } .down { color: var(--down); } .muted { color: var(--muted); }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 700; letter-spacing: .01em; margin: 0; text-wrap: balance; line-height: 1.1; }
+h2 { font-size: 1.6rem; }
+h3 { font-size: 1.2rem; }
+.eyebrow { font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; font-weight: 600; color: var(--muted); }
+
+/* ---------- estrutura ---------- */
+.app { display: grid; grid-template-columns: 240px minmax(0,1fr); min-height: 100vh; }
+.side { background: var(--navy); color: var(--navy-ink); padding: 24px 16px; display: flex; flex-direction: column; gap: 24px; position: sticky; top: 0; height: 100vh; }
+.brand { font-family: var(--f-display); font-weight: 800; font-size: 1.7rem; letter-spacing: .02em; display: flex; align-items: center; gap: 8px; padding-inline: 8px; }
+.brand b { background: var(--gold); color: #14233a; padding: 0 6px; border-radius: 4px; }
+.nav { display: flex; flex-direction: column; gap: 4px; }
+.nav a { color: var(--navy-ink); text-decoration: none; padding: 10px 12px; border-radius: 10px; font-weight: 600; display: flex; align-items: center; gap: 10px; opacity: .78; white-space: nowrap; }
+.nav a:hover { opacity: 1; background: rgba(255,255,255,.06); }
+.nav a[aria-current="page"] { opacity: 1; background: rgba(255,255,255,.12); box-shadow: inset 3px 0 0 #e2b356; }
+.nav svg { width: 18px; height: 18px; flex: none; }
+.side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 8px; font-size: .8rem; }
+.side-foot label { opacity: .7; }
+.side-foot select { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); color: var(--navy-ink); border-radius: 8px; padding: 8px; width: 100%; }
+.side-foot select option { color: #131a24; background: #fff; }
+.demo-tag { display: inline-block; font-size: .68rem; text-transform: uppercase; letter-spacing: .08em; background: rgba(226,179,86,.18); color: #f0cf8a; padding: 2px 8px; border-radius: 999px; align-self: flex-start; }
+
+main { padding: 24px clamp(16px, 3vw, 40px) 48px; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.topbar .crumb { font-weight: 600; }
+.topbar .crumb span { color: var(--muted); font-weight: 500; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line); font-size: .8rem; color: var(--muted); }
+.chip.live::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--up); box-shadow: 0 0 0 3px var(--up-soft); }
+
+.grid { display: grid; gap: 16px; }
+.g2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.g3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.g4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+.span2 { grid-column: span 2; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+
+/* ---------- hero do painel ---------- */
+.hero { background: var(--navy); color: var(--navy-ink); border-radius: calc(var(--r) + 4px); padding: 28px; display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1.4fr); gap: 28px; position: relative; overflow: hidden; }
+.hero::after { content: ""; position: absolute; inset: auto -10% -60% 40%; height: 120%; background: repeating-linear-gradient(115deg, rgba(255,255,255,.035) 0 2px, transparent 2px 22px); pointer-events: none; }
+.hero h1 { font-size: clamp(2rem, 4vw, 2.8rem); }
+.hero .sub { opacity: .75; font-size: .92rem; }
+.hero-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+.hero-tags .t { background: rgba(255,255,255,.09); border-radius: 999px; padding: 4px 12px; font-size: .82rem; }
+.hero-tags .t b { font-family: var(--f-num); color: #f0cf8a; }
+.trail { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: 16px; position: relative; z-index: 1; }
+.trail .lbl { font-family: var(--f-display); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; font-size: .9rem; text-align: center; margin-top: 4px; }
+.bar { height: 10px; background: rgba(255,255,255,.14); border-radius: 999px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: linear-gradient(90deg, #c99a2e, #f0cf8a); border-radius: inherit; }
+.bar.light { background: var(--surface-2); border: 1px solid var(--line); }
+.bar.light > i { background: var(--gold); }
+.bar.up > i { background: var(--up); }
+.trail-info { display: flex; justify-content: space-between; font-size: .82rem; opacity: .85; margin-top: 8px; gap: 8px; flex-wrap: wrap; }
+.trail-info b { font-family: var(--f-num); color: #f0cf8a; }
+
+.stat .v { font-family: var(--f-num); font-size: 1.55rem; font-weight: 600; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.stat .d { font-size: .82rem; }
+
+/* ---------- rival / disputa ---------- */
+.rival { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
+.rival .p { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px; min-width: 0; }
+.rival .p.me { border-color: var(--gold); background: var(--gold-soft); }
+.rival .vs { font-family: var(--f-display); font-weight: 800; font-size: 1.3rem; color: var(--muted); }
+.rival .n { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---------- tabelas de ranking ---------- */
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab { border: 1px solid var(--line); background: var(--surface); padding: 7px 14px; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: .88rem; color: var(--muted); }
+.tab:hover { color: var(--ink); }
+.tab[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+.seg button { border: 0; background: none; padding: 5px 12px; border-radius: 7px; cursor: pointer; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+.controls { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+
+.podium { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 12px; align-items: end; }
+.pod { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
+.pod .pos { font-family: var(--f-display); font-weight: 800; font-size: 2.4rem; line-height: 1; }
+.pod.p1 { padding-block: 24px; border-color: var(--gold); background: linear-gradient(180deg, var(--gold-soft), var(--surface)); }
+.pod.p1 .pos { color: var(--gold); }
+.pod .n { font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pod .v { font-family: var(--f-num); font-weight: 600; font-size: 1.1rem; }
+.avatar { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .9rem; color: #fff; flex: none; }
+.pod .avatar { width: 56px; height: 56px; font-size: 1.05rem; }
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+th { text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.r, th.r { text-align: right; }
+tr.me td { background: var(--gold-soft); }
+.who { display: flex; align-items: center; gap: 10px; }
+.who .avatar { width: 32px; height: 32px; font-size: .75rem; }
+.who small { display: block; color: var(--muted); font-size: .76rem; }
+.mv { font-family: var(--f-num); font-size: .78rem; }
+.rank { font-family: var(--f-display); font-weight: 700; font-size: 1.1rem; width: 2.2em; display: inline-block; }
+.pill { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 2px 9px 2px 3px; font-size: .76rem; font-weight: 600; border: 1px solid var(--line); background: var(--surface-2); }
+.pill svg { width: 18px; height: 20px; }
+
+/* ---------- placas & prêmios ---------- */
+.tiers { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+.tier { border: 1px solid var(--line); border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; background: var(--surface); }
+.tier.locked { opacity: .55; }
+.tier.cur { border-color: var(--gold); box-shadow: 0 0 0 3px var(--gold-soft); }
+.tier .nm { font-family: var(--f-display); font-weight: 700; font-size: 1.15rem; text-transform: uppercase; letter-spacing: .05em; }
+.prize-list { display: flex; flex-direction: column; }
+.prize { display: grid; grid-template-columns: 92px minmax(0,1fr) auto; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.prize:last-child { border-bottom: 0; }
+.prize .meta { font-family: var(--f-num); font-weight: 600; }
+.badge { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.badge.ok { background: var(--up-soft); color: var(--up); }
+.badge.no { background: var(--surface-2); color: var(--muted); border: 1px solid var(--line); }
+.badge.gold { background: var(--gold-soft); color: var(--gold); }
+
+/* ---------- campeonato ---------- */
+.champ { background: var(--navy); color: var(--navy-ink); border-radius: calc(var(--r) + 4px); padding: 28px; display: grid; grid-template-columns: minmax(0,1.3fr) minmax(0,1fr); gap: 24px; }
+.countdown { display: flex; gap: 10px; }
+.countdown div { background: rgba(255,255,255,.08); border-radius: 10px; padding: 10px 12px; text-align: center; min-width: 64px; }
+.countdown b { display: block; font-family: var(--f-num); font-size: 1.6rem; color: #f0cf8a; line-height: 1.1; }
+.countdown span { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
+.payout { display: flex; flex-direction: column; gap: 6px; }
+.payout div { display: flex; justify-content: space-between; gap: 12px; padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.06); }
+.payout div:first-child { background: rgba(226,179,86,.2); }
+.payout b { font-family: var(--f-num); color: #f0cf8a; }
+.rules { margin: 0; padding-left: 18px; font-size: .9rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+.duel { border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.duel .row { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+.duel .row .n { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.duel .split { display: flex; height: 8px; border-radius: 999px; overflow: hidden; background: var(--surface-2); }
+.duel .split i:first-child { background: var(--gold); }
+.duel .split i:last-child { background: var(--muted); opacity: .45; }
+.clan { display: grid; grid-template-columns: 36px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--line); }
+.clan:last-child { border-bottom: 0; }
+.clan .ico { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-family: var(--f-display); font-weight: 800; color: #fff; }
+
+/* ---------- feed ---------- */
+.feed { display: flex; flex-direction: column; }
+.feed-item { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
+.feed-item:last-child { border-bottom: 0; }
+.feed-item svg { width: 26px; height: 30px; }
+.fame { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.fame .card { gap: 6px; }
+
+svg text { fill: var(--muted); font-family: var(--f-num); font-size: 11px; }
+.legend { display: flex; gap: 14px; font-size: .8rem; color: var(--muted); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.note { font-size: .8rem; color: var(--muted); }
+
+@media (max-width: 1100px) {
+  .g4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .g3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .hero, .champ { grid-template-columns: 1fr; }
+}
+@media (max-width: 820px) {
+  .app { grid-template-columns: minmax(0,1fr); }
+  .side { position: sticky; top: env(safe-area-inset-top, 0px); height: auto; z-index: 5; flex-direction: row; align-items: center; padding: 10px 16px; gap: 12px; }
+  .brand { font-size: 1.3rem; padding: 0; }
+  .nav { flex-direction: row; overflow-x: auto; min-width: 0; flex: 1; gap: 2px; scrollbar-width: none; }
+  .nav a { padding: 8px 10px; font-size: .88rem; }
+  .nav a[aria-current="page"] { box-shadow: inset 0 -3px 0 #e2b356; }
+  .nav a svg { display: none; }
+  .side-foot { display: none; }
+  .g2, .g3, .span2 { grid-template-columns: 1fr; grid-column: auto; }
+  .viewas-mobile { display: flex !important; }
+}
+@media (max-width: 520px) {
+  .g4 { grid-template-columns: 1fr 1fr; }
+  .hero, .champ { padding: 20px; }
+  .trail { grid-template-columns: auto minmax(0,1fr) auto; gap: 10px; }
+  .trail svg { width: 48px; height: 56px; }
+  .podium { gap: 8px; }
+  .pod .pos { font-size: 1.8rem; }
+  .pod .v { font-size: .92rem; }
+  .countdown div { min-width: 0; flex: 1; padding: 8px 4px; }
+  .prize { grid-template-columns: 76px minmax(0,1fr); }
+  .prize .badge { grid-column: 2; justify-self: start; }
+  .stat .v { font-size: 1.2rem; }
+}
+.viewas-mobile { display: none; align-items: center; gap: 8px; font-size: .85rem; }
+.viewas-mobile select { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; max-width: 60vw; }
+@media (prefers-reduced-motion: no-preference) {
+  .bar > i { transition: width .8s cubic-bezier(.2,.7,.2,1); }
+  .view-enter { animation: rise .35s ease-out both; }
+  @keyframes rise { from { transform: translateY(6px); } to { transform: none; } }
+}
+</style>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand" id="brand">Arena <b>Copy</b></div>
+    <nav class="nav" id="nav" aria-label="Seções"></nav>
+    <div class="side-foot">
+      <span class="demo-tag">Modo demonstração</span>
+      <label for="viewas">Ver painel como</label>
+      <select id="viewas"></select>
+    </div>
+  </aside>
+  <main>
+    <div class="topbar">
+      <div class="crumb" id="crumb"></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+        <div class="viewas-mobile"><label for="viewas-m">Ver como</label><select id="viewas-m"></select></div>
+        <span class="chip live" id="updated"></span>
+      </div>
+    </div>
+    <section id="view" class="grid"></section>
+  </main>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIGURAÇÃO — ajuste aqui as regras da sua comunidade
+   ===================================================================== */
+const CONFIG = {
+  marca: ["Arena", "Copy"],
+  alunoLogado: "a33",                 // em produção vem do login
+  atualizadoEm: "2026-09-30",
+  meses: ["Mai", "Jun", "Jul", "Ago", "Set"],   // um valor por coluna em aportes/lucro
+  // Placas: conquistadas pelo PATRIMÔNIO (aportes + lucro) na conta copiada
+  placas: [
+    { id: "recruta",  nome: "Recruta",  min: 0,      cor: "#7d8794" },
+    { id: "bronze",   nome: "Bronze",   min: 5000,   cor: "#a86b3c" },
+    { id: "prata",    nome: "Prata",    min: 10000,  cor: "#8e9aa6" },
+    { id: "ouro",     nome: "Ouro",     min: 25000,  cor: "#c99a2e" },
+    { id: "platina",  nome: "Platina",  min: 50000,  cor: "#3f9c9a" },
+    { id: "diamante", nome: "Diamante", min: 100000, cor: "#3d7fd9" },
+    { id: "black",    nome: "Black",    min: 250000, cor: "#2a2d33" },
+    { id: "lenda",    nome: "Lenda",    min: 500000, cor: "#8b3fbf" }
+  ],
+  // Prêmios: conquistados pelo LUCRO ACUMULADO
+  premios: [
+    { meta: 1000,   nome: "Kit boas-vindas", detalhe: "Camiseta oficial + caneca" },
+    { meta: 2500,   nome: "Moletom da Arena", detalhe: "Edição numerada" },
+    { meta: 5000,   nome: "Mentoria 1:1", detalhe: "1 hora com o trader da casa" },
+    { meta: 10000,  nome: "Smartwatch", detalhe: "Entregue no evento mensal" },
+    { meta: 25000,  nome: "Jantar com o time", detalhe: "+ troféu de cristal" },
+    { meta: 50000,  nome: "iPhone", detalhe: "Modelo do ano" },
+    { meta: 100000, nome: "Viagem internacional", detalhe: "Para 2 pessoas" }
+  ],
+  campeonato: {
+    nome: "Copa Primavera",
+    temporada: "Temporada 3",
+    meses: [3, 4],                    // índices de CONFIG.meses que já contam (Ago, Set)
+    periodoTexto: "Agosto a Outubro de 2026",
+    fim: "2026-10-31T23:59:00-03:00",
+    capitalMinimo: 2000,
+    premiacao: [
+      ["1º lugar", "R$ 3.000 + troféu"],
+      ["2º lugar", "R$ 1.500"],
+      ["3º lugar", "R$ 750"],
+      ["4º ao 10º", "Mentoria em grupo"],
+      ["Clã campeão", "Live exclusiva + bônus"]
+    ],
+    regras: [
+      "Vale a rentabilidade (%) da temporada, então conta pequena e conta grande disputam igual.",
+      "Aportes entram na base do cálculo e não inflam o resultado.",
+      "Patrimônio mínimo de R$ 2.000 para entrar no ranking.",
+      "Duelos 1x1 são sorteados entre vizinhos de classificação."
+    ]
+  },
+  clas: {
+    touros:   { nome: "Touros",   cor: "#c4572b" },
+    lobos:    { nome: "Lobos",    cor: "#4d6a8f" },
+    falcoes:  { nome: "Falcões",  cor: "#2f8a6a" },
+    tubaroes: { nome: "Tubarões", cor: "#6b4fa3" }
+  }
+};
+
+/* =====================================================================
+   DADOS — valores de EXEMPLO. Em produção, vêm da planilha/corretora.
+   aportes e lucro: um número por mês, na ordem de CONFIG.meses
+   ===================================================================== */
+const ALUNOS = [
+    {id: "a01", nome: "Rafael Monteiro", apelido: "Rafael M.", cidade: "Curitiba/PR", cla: "touros", aportes: [0, 5000, 0, 0, 5000], lucro: [0, 188, 264, 341, 365]},
+    {id: "a02", nome: "Juliana Prado", apelido: "Juliana P.", cidade: "Goiânia/GO", cla: "lobos", aportes: [3000, 0, 0, 5000, 1000], lucro: [105, 129, 58, 132, 959]},
+    {id: "a03", nome: "Bruno Carvalho", apelido: "Bruno C.", cidade: "Recife/PE", cla: "falcoes", aportes: [0, 0, 5000, 2000, 1000], lucro: [0, 0, 311, 20, 235]},
+    {id: "a04", nome: "Camila Rocha", apelido: "Camila R.", cidade: "Porto Alegre/RS", cla: "tubaroes", aportes: [150000, 0, 5000, 0, 1000], lucro: [5382, 1152, 8193, 2021, 9984]},
+    {id: "a05", nome: "Diego Nascimento", apelido: "Diego N.", cidade: "Florianópolis/SC", cla: "touros", aportes: [210000, 10000, 0, 5000, 0], lucro: [65, 17458, 2548, 14454, 17810]},
+    {id: "a06", nome: "Fernanda Lima", apelido: "Fernanda L.", cidade: "São Paulo/SP", cla: "lobos", aportes: [3000, 0, 3000, 0, 0], lucro: [146, 19, 75, 143, 8]},
+    {id: "a07", nome: "Gustavo Pires", apelido: "Gustavo P.", cidade: "Campinas/SP", cla: "falcoes", aportes: [0, 210000, 0, 3000, 10000], lucro: [0, 10958, 12312, 5413, 4943]},
+    {id: "a08", nome: "Helena Duarte", apelido: "Helena D.", cidade: "Salvador/BA", cla: "tubaroes", aportes: [8000, 0, 10000, 10000, 5000], lucro: [620, 522, 1176, 766, 2130]},
+    {id: "a09", nome: "Igor Batista", apelido: "Igor B.", cidade: "Goiânia/GO", cla: "touros", aportes: [0, 40000, 1000, 500, 500], lucro: [0, 3612, 1835, 3312, 4101]},
+    {id: "a10", nome: "Larissa Mendes", apelido: "Larissa M.", cidade: "Fortaleza/CE", cla: "lobos", aportes: [0, 1500, 0, 500, 0], lucro: [0, 101, 119, 71, 26]},
+    {id: "a11", nome: "Marcelo Teixeira", apelido: "Marcelo T.", cidade: "Curitiba/PR", cla: "falcoes", aportes: [55000, 0, 0, 5000, 0], lucro: [4793, 849, 1297, 4280, 5497]},
+    {id: "a12", nome: "Natália Freitas", apelido: "Natália F.", cidade: "Goiânia/GO", cla: "tubaroes", aportes: [0, 2500, 500, 0, 1000], lucro: [0, 105, -82, 86, 132]},
+    {id: "a13", nome: "Otávio Ramos", apelido: "Otávio R.", cidade: "Goiânia/GO", cla: "touros", aportes: [0, 22000, 0, 10000, 500], lucro: [0, 744, 2277, -1119, 2305]},
+    {id: "a14", nome: "Patrícia Gomes", apelido: "Patrícia G.", cidade: "Belo Horizonte/MG", cla: "lobos", aportes: [0, 0, 0, 6000, 1000], lucro: [0, 0, 0, 369, 590]},
+    {id: "a15", nome: "Renato Alves", apelido: "Renato A.", cidade: "Salvador/BA", cla: "falcoes", aportes: [0, 0, 0, 0, 1500], lucro: [0, 0, 0, 0, 51]},
+    {id: "a16", nome: "Sabrina Castro", apelido: "Sabrina C.", cidade: "Brasília/DF", cla: "tubaroes", aportes: [0, 3000, 500, 1000, 1000], lucro: [0, 112, 83, -28, 195]},
+    {id: "a17", nome: "Thiago Moreira", apelido: "Thiago M.", cidade: "Ribeirão Preto/SP", cla: "touros", aportes: [9000, 10000, 0, 1000, 0], lucro: [589, 5, 1918, 935, 1793]},
+    {id: "a18", nome: "Vanessa Ribeiro", apelido: "Vanessa R.", cidade: "Fortaleza/CE", cla: "lobos", aportes: [0, 22000, 0, 0, 3000], lucro: [0, 796, 1091, 1544, 1390]},
+    {id: "a19", nome: "William Souza", apelido: "William S.", cidade: "Belo Horizonte/MG", cla: "falcoes", aportes: [30000, 0, 3000, 5000, 500], lucro: [989, 1395, 382, -129, 2318]},
+    {id: "a20", nome: "Yasmin Araújo", apelido: "Yasmin A.", cidade: "Florianópolis/SC", cla: "tubaroes", aportes: [1500, 0, 10000, 500, 0], lucro: [124, 159, 350, 275, -309]},
+    {id: "a21", nome: "André Farias", apelido: "André F.", cidade: "Campinas/SP", cla: "touros", aportes: [8000, 1000, 0, 5000, 0], lucro: [267, 362, 640, 769, 574]},
+    {id: "a22", nome: "Beatriz Cunha", apelido: "Beatriz C.", cidade: "Belo Horizonte/MG", cla: "lobos", aportes: [0, 0, 0, 0, 40000], lucro: [0, 0, 0, 0, 2947]},
+    {id: "a23", nome: "Caio Barros", apelido: "Caio B.", cidade: "Salvador/BA", cla: "falcoes", aportes: [0, 0, 0, 0, 5000], lucro: [0, 0, 0, 0, -47]},
+    {id: "a24", nome: "Daniela Moura", apelido: "Daniela M.", cidade: "Brasília/DF", cla: "tubaroes", aportes: [0, 0, 0, 0, 1500], lucro: [0, 0, 0, 0, 122]},
+    {id: "a25", nome: "Eduardo Pinto", apelido: "Eduardo P.", cidade: "São Paulo/SP", cla: "touros", aportes: [5000, 10000, 10000, 0, 2000], lucro: [39, 509, 886, 1988, 2092]},
+    {id: "a26", nome: "Flávia Nogueira", apelido: "Flávia N.", cidade: "Salvador/BA", cla: "lobos", aportes: [95000, 0, 3000, 2000, 10000], lucro: [3628, 4646, 1905, 2410, 2745]},
+    {id: "a27", nome: "Gabriel Rezende", apelido: "Gabriel R.", cidade: "Porto Alegre/RS", cla: "falcoes", aportes: [0, 150000, 0, 5000, 0], lucro: [0, 6585, 8548, 12971, 5478]},
+    {id: "a28", nome: "Isabela Martins", apelido: "Isabela M.", cidade: "Curitiba/PR", cla: "tubaroes", aportes: [0, 4000, 0, 0, 500], lucro: [0, 68, 292, 367, 343]},
+    {id: "a29", nome: "João Victor Lopes", apelido: "João L.", cidade: "Florianópolis/SC", cla: "touros", aportes: [0, 0, 70000, 1000, 3000], lucro: [0, 0, 2851, 4567, 5868]},
+    {id: "a30", nome: "Karina Fonseca", apelido: "Karina F.", cidade: "Goiânia/GO", cla: "lobos", aportes: [22000, 10000, 0, 0, 1000], lucro: [549, 2885, 635, 2491, 2330]},
+    {id: "a31", nome: "Leonardo Dias", apelido: "Leonardo D.", cidade: "Florianópolis/SC", cla: "falcoes", aportes: [0, 2500, 0, 0, 0], lucro: [0, 106, 172, 252, 38]},
+    {id: "a32", nome: "Mariana Vieira", apelido: "Mariana V.", cidade: "Fortaleza/CE", cla: "tubaroes", aportes: [150000, 0, 0, 0, 0], lucro: [-2967, 431, 3688, 10719, 16709]},
+    {id: "a33", nome: "Nicolas Antunes", apelido: "Nicolas A.", cidade: "Curitiba/PR", cla: "touros", aportes: [12000, 0, 3000, 0, 0], lucro: [1153, 982, 1305, 809, 1741]},
+    {id: "a34", nome: "Priscila Tavares", apelido: "Priscila T.", cidade: "São Paulo/SP", cla: "lobos", aportes: [12000, 1000, 1000, 500, 0], lucro: [692, 1143, 436, 638, 1718]},
+    {id: "a35", nome: "Rodrigo Campos", apelido: "Rodrigo C.", cidade: "Porto Alegre/RS", cla: "falcoes", aportes: [1500, 10000, 10000, 10000, 5000], lucro: [61, 84, 1917, 2663, 2898]},
+    {id: "a36", nome: "Tatiane Correia", apelido: "Tatiane C.", cidade: "Florianópolis/SC", cla: "tubaroes", aportes: [18000, 500, 500, 2000, 0], lucro: [724, 425, 1222, 837, 1193]}
+];
+
+/* =====================================================================
+   CÁLCULOS
+   ===================================================================== */
+const N = CONFIG.meses.length, LAST = N - 1;
+const sum = a => a.reduce((s, v) => s + v, 0);
+const brl = v => (v < 0 ? "−" : "") + "R$ " + Math.abs(Math.round(v)).toLocaleString("pt-BR");
+const brlK = v => Math.abs(v) >= 1000 ? (v / 1000).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + "k" : String(Math.round(v));
+const pct = v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v * 100).toFixed(1).replace(".", ",") + "%";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const range = (a, b) => Array.from({ length: b - a + 1 }, (_, i) => a + i);
+
+ALUNOS.forEach(a => {
+  a.cap = []; let c = 0;
+  for (let m = 0; m < N; m++) { c += a.aportes[m] + a.lucro[m]; a.cap.push(c); }
+  a.patrimonio = c;
+  a.aportado = sum(a.aportes);
+  a.lucroTotal = sum(a.lucro);
+  a.iniciais = a.nome.split(" ").filter(Boolean).map(p => p[0]).slice(0, 2).join("").toUpperCase();
+  let s = 0; for (let m = LAST; m >= 0 && a.lucro[m] > 0; m--) s++;
+  a.sequencia = s;
+});
+const lucroP = (a, idx) => sum(idx.map(m => a.lucro[m]));
+const aporteP = (a, idx) => sum(idx.map(m => a.aportes[m]));
+const baseP = (a, idx) => (idx[0] > 0 ? a.cap[idx[0] - 1] : 0) + aporteP(a, idx);
+const rentP = (a, idx) => { const b = baseP(a, idx); return b > 0 ? lucroP(a, idx) / b : 0; };
+const capAt = (a, idx) => a.cap[idx[idx.length - 1]];
+
+const placaDe = v => { let p = CONFIG.placas[0]; for (const t of CONFIG.placas) if (v >= t.min) p = t; return p; };
+const proxPlaca = v => CONFIG.placas.find(t => t.min > v) || null;
+const proxPremio = v => CONFIG.premios.find(p => p.meta > v) || null;
+
+const PERIODOS = {
+  mes:       { nome: CONFIG.meses[LAST], idx: [LAST], prev: [LAST - 1] },
+  temporada: { nome: CONFIG.campeonato.temporada, idx: CONFIG.campeonato.meses, prev: CONFIG.campeonato.meses.slice(0, -1) },
+  geral:     { nome: "Desde o início", idx: range(0, LAST), prev: range(0, LAST - 1) }
+};
+const METRICAS = {
+  lucro:   { nome: "Lucro",          col: "Lucro no período", val: (a, i) => lucroP(a, i), fmt: brl, ok: (a, i) => baseP(a, i) > 0 },
+  rent:    { nome: "Rentabilidade",  col: "Rentabilidade",    val: (a, i) => rentP(a, i), fmt: pct, ok: (a, i) => capAt(a, i) >= CONFIG.campeonato.capitalMinimo && baseP(a, i) > 0 },
+  aportes: { nome: "Aportes",        col: "Aportado",         val: (a, i) => aporteP(a, i), fmt: brl, ok: (a, i) => aporteP(a, i) > 0 },
+  capital: { nome: "Patrimônio",     col: "Patrimônio",       val: (a, i) => capAt(a, i), fmt: brl, ok: (a, i) => capAt(a, i) > 0 }
+};
+function ranking(metrica, idx) {
+  const M = METRICAS[metrica];
+  return ALUNOS.filter(a => M.ok(a, idx)).map(a => ({ a, v: M.val(a, idx) })).sort((x, y) => y.v - x.v);
+}
+function posicao(metrica, idx, id) { const r = ranking(metrica, idx); const i = r.findIndex(x => x.a.id === id); return i < 0 ? null : i + 1; }
+
+function clasRanking(idx) {
+  return Object.entries(CONFIG.clas).map(([id, c]) => {
+    const mem = ALUNOS.filter(a => a.cla === id && METRICAS.rent.ok(a, idx));
+    const media = mem.length ? sum(mem.map(a => rentP(a, idx))) / mem.length : 0;
+    const mvp = mem.slice().sort((x, y) => rentP(y, idx) - rentP(x, idx))[0];
+    return { id, ...c, membros: ALUNOS.filter(a => a.cla === id).length, media, lucro: sum(mem.map(a => lucroP(a, idx))), mvp };
+  }).sort((x, y) => y.media - x.media);
+}
+
+function eventos() {
+  const ev = [];
+  ALUNOS.forEach(a => {
+    for (let m = 0; m < N; m++) {
+      const antes = m ? a.cap[m - 1] : 0, lAntes = m ? sum(a.lucro.slice(0, m)) : 0, lDepois = sum(a.lucro.slice(0, m + 1));
+      CONFIG.placas.forEach(t => { if (t.min > 0 && antes < t.min && a.cap[m] >= t.min) ev.push({ m, a, tipo: "placa", t, txt: `subiu para a placa <b>${t.nome}</b>` }); });
+      CONFIG.premios.forEach(p => { if (lAntes < p.meta && lDepois >= p.meta) ev.push({ m, a, tipo: "premio", p, txt: `ganhou <b>${esc(p.nome)}</b> ao passar ${brl(p.meta)} de lucro` }); });
+    }
+  });
+  return ev.sort((x, y) => y.m - x.m || (y.t ? y.t.min : y.p.meta) - (x.t ? x.t.min : x.p.meta));
+}
+
+/* =====================================================================
+   PEÇAS VISUAIS
+   ===================================================================== */
+function shield(t, size = 64) {
+  const w = size, h = Math.round(size * 1.15);
+  const lt = t.id === "black" ? "#e2b356" : "rgba(255,255,255,.9)";
+  return `<svg width="${w}" height="${h}" viewBox="0 0 64 74" role="img" aria-label="Placa ${t.nome}">
+    <path d="M32 2 L60 12 V36 C60 54 47 66 32 72 C17 66 4 54 4 36 V12 Z" fill="${t.cor}" stroke="${lt}" stroke-opacity=".35" stroke-width="2"/>
+    <path d="M32 9 L53 16.5 V36 C53 50 43.5 59 32 64 C20.5 59 11 50 11 36 V16.5 Z" fill="none" stroke="${lt}" stroke-opacity=".45" stroke-width="1.5"/>
+    <text x="32" y="44" text-anchor="middle" style="fill:${lt};font-family:'Saira Condensed',sans-serif;font-weight:800;font-size:22px">${t.nome[0]}</text>
+  </svg>`;
+}
+const placaPill = a => { const t = placaDe(a.patrimonio); return `<span class="pill">${shield(t, 18)}${t.nome}</span>`; };
+const avatar = a => `<span class="avatar" style="background:${CONFIG.clas[a.cla].cor}" aria-hidden="true">${a.iniciais}</span>`;
+const who = (a, sub) => `<div class="who">${avatar(a)}<div style="min-width:0"><span style="font-weight:600">${esc(a.nome)}</span><small>${sub ?? esc(a.cidade) + " · " + CONFIG.clas[a.cla].nome}</small></div></div>`;
+const mv = d => d == null ? `<span class="mv muted">novo</span>` : d > 0 ? `<span class="mv up">▲${d}</span>` : d < 0 ? `<span class="mv down">▼${-d}</span>` : `<span class="mv muted">—</span>`;
+
+function ticks(max, n = 4) { const step = nice(max / n); const top = Math.ceil(max / step) * step; return { top, list: range(0, Math.round(top / step)).map(i => i * step) }; }
+function nice(v) { if (v <= 0) return 1; const p = 10 ** Math.floor(Math.log10(v)); const n = v / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; }
+
+function lineChart(a) {
+  const W = 600, H = 230, L = 52, R = 16, T = 14, B = 28, iw = W - L - R, ih = H - T - B;
+  const ap = []; let s = 0; a.aportes.forEach(v => ap.push(s += v));
+  const tk = ticks(Math.max(1, ...a.cap, ...ap)), max = tk.top;
+  const x = i => L + (N === 1 ? iw / 2 : i * iw / (N - 1)), y = v => T + ih - v / max * ih;
+  const grid = tk.list.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--chart-grid)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${brlK(v)}</text>`).join("");
+  const xl = CONFIG.meses.map((m, i) => `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${m}</text>`).join("");
+  const pts = a.cap.map((v, i) => `${x(i)},${y(v)}`).join(" ");
+  const apPts = ap.map((v, i) => `${x(i)},${y(v)}`).join(" ");
+  const area = `M${x(0)},${y(0)} L${pts.replace(/ /g, " L")} L${x(LAST)},${y(0)} Z`;
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Evolução do patrimônio">
+    ${grid}${xl}
+    <path d="${area}" fill="var(--chart-fill)"/>
+    <polyline points="${apPts}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
+    <polyline points="${pts}" fill="none" stroke="var(--chart-line)" stroke-width="2.5" stroke-linejoin="round"/>
+    <circle cx="${x(LAST)}" cy="${y(a.cap[LAST])}" r="5" fill="var(--chart-line)" stroke="var(--surface)" stroke-width="2"/>
+  </svg>`;
+}
+function barChart(a) {
+  const W = 600, H = 230, L = 52, R = 16, T = 22, B = 28, iw = W - L - R, ih = H - T - B;
+  const tk = ticks(Math.max(1, ...a.lucro)), step = tk.list[1], hi = tk.top, mn = Math.min(0, ...a.lucro), lo = mn < 0 ? -Math.ceil(-mn / step) * step : 0;
+  const y = v => T + (hi - v) / (hi - lo) * ih, bw = iw / N * .5;
+  const tl = []; for (let v = lo; v <= hi + 1e-9; v += step) tl.push(v);
+  const grid = tl.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--chart-grid)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${brlK(v)}</text>`).join("");
+  const bars = a.lucro.map((v, i) => {
+    const cx = L + iw / N * (i + .5), top = y(Math.max(v, 0)), hgt = Math.max(Math.abs(y(v) - y(0)), v ? 2 : 0);
+    const lab = v ? `<text x="${cx}" y="${v >= 0 ? top - 6 : top + hgt + 13}" text-anchor="middle" style="fill:var(--ink)">${brlK(v)}</text>` : "";
+    return `<rect x="${cx - bw / 2}" y="${top}" width="${bw}" height="${hgt}" rx="4" fill="${v >= 0 ? "var(--up)" : "var(--down)"}"/>${lab}<text x="${cx}" y="${H - 8}" text-anchor="middle">${CONFIG.meses[i]}</text>`;
+  }).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Lucro por mês">${grid}${bars}</svg>`;
+}
+
+/* =====================================================================
+   TELAS
+   ===================================================================== */
+const ICON = {
+  painel: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  ranking: '<path d="M8 21V10M16 21V4M12 21v-7M4 21h16"/>',
+  campeonato: '<path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/>',
+  placas: '<path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5z"/>',
+  hall: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>'
+};
+const VIEWS = { painel: "Meu painel", ranking: "Rankings", campeonato: "Campeonato", placas: "Placas e prêmios", hall: "Hall da fama" };
+const state = { view: "painel", me: CONFIG.alunoLogado, metrica: "lucro", periodo: "mes" };
+try { const s = JSON.parse(localStorage.getItem("arena-state") || "{}"); Object.assign(state, s); } catch (e) {}
+const save = () => { try { localStorage.setItem("arena-state", JSON.stringify({ metrica: state.metrica, periodo: state.periodo, me: state.me })); } catch (e) {} };
+const me = () => ALUNOS.find(a => a.id === state.me) || ALUNOS[0];
+
+function viewPainel() {
+  const a = me(), t = placaDe(a.patrimonio), nx = proxPlaca(a.patrimonio), pr = proxPremio(a.lucroTotal);
+  const ganhos = CONFIG.premios.filter(p => a.lucroTotal >= p.meta);
+  const prog = nx ? (a.patrimonio - t.min) / (nx.min - t.min) : 1;
+  const prevP = pr ? (CONFIG.premios[CONFIG.premios.indexOf(pr) - 1]?.meta || 0) : 0;
+  const progPr = pr ? Math.max(0, (a.lucroTotal - prevP) / (pr.meta - prevP)) : 1;
+  const idx = PERIODOS.mes.idx, rk = ranking("lucro", idx), i = rk.findIndex(x => x.a.id === a.id);
+  const posMes = i + 1, posCap = posicao("capital", PERIODOS.geral.idx, a.id), posTemp = posicao("rent", CONFIG.campeonato.meses, a.id);
+  const rm = rentP(a, idx);
+  const acima = i > 0 ? rk[i - 1] : null, abaixo = rk[i + 1] || null;
+  const primeiro = a.nome.split(" ")[0];
+  const data = new Date(CONFIG.atualizadoEm + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
+
+  return `
+  <div class="hero">
+    <div style="position:relative;z-index:1">
+      <div class="eyebrow" style="color:inherit;opacity:.7">${data}</div>
+      <h1>Bem-vindo, ${esc(primeiro)}</h1>
+      <div class="sub">${esc(a.cidade)} · Clã ${CONFIG.clas[a.cla].nome}</div>
+      <div class="hero-tags">
+        <span class="t">Ranking do mês <b>${posMes ? posMes + "º" : "—"}</b></span>
+        <span class="t">${CONFIG.campeonato.nome} <b>${posTemp ? posTemp + "º" : "—"}</b></span>
+        <span class="t">Patrimônio <b>${posCap}º</b></span>
+        ${a.sequencia >= 2 ? `<span class="t">Sequência <b>${a.sequencia} meses</b> no verde</span>` : ""}
+      </div>
+    </div>
+    <div style="position:relative;z-index:1">
+      <div class="trail">
+        <div>${shield(t, 64)}<div class="lbl">${t.nome}</div></div>
+        <div>
+          <div class="eyebrow" style="color:inherit;opacity:.7;margin-bottom:8px">${nx ? "Rumo à próxima placa" : "Placa máxima conquistada"}</div>
+          <div class="bar"><i style="width:${Math.min(100, prog * 100).toFixed(1)}%"></i></div>
+          <div class="trail-info"><span>Patrimônio <b>${brl(a.patrimonio)}</b></span>${nx ? `<span>faltam <b>${brl(nx.min - a.patrimonio)}</b></span>` : ""}</div>
+        </div>
+        <div>${nx ? shield(nx, 64) + `<div class="lbl" style="opacity:.6">${nx.nome}</div>` : ""}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g4">
+    <div class="card stat"><div class="eyebrow">Patrimônio</div><div class="v">${brl(a.patrimonio)}</div><div class="d muted">aportado ${brl(a.aportado)}</div></div>
+    <div class="card stat"><div class="eyebrow">Lucro acumulado</div><div class="v ${a.lucroTotal >= 0 ? "up" : "down"}">${brl(a.lucroTotal)}</div><div class="d muted">${pct(a.aportado ? a.lucroTotal / a.aportado : 0)} sobre o aportado</div></div>
+    <div class="card stat"><div class="eyebrow">Lucro em ${CONFIG.meses[LAST]}</div><div class="v ${a.lucro[LAST] >= 0 ? "up" : "down"}">${brl(a.lucro[LAST])}</div><div class="d ${rm >= 0 ? "up" : "down"}">${pct(rm)} no mês</div></div>
+    <div class="card stat"><div class="eyebrow">Prêmios conquistados</div><div class="v">${ganhos.length}<span class="muted" style="font-size:1rem"> / ${CONFIG.premios.length}</span></div><div class="d muted">${ganhos.length ? esc(ganhos[ganhos.length - 1].nome) : "o primeiro sai com " + brl(CONFIG.premios[0].meta)}</div></div>
+  </div>
+
+  <div class="grid g3">
+    <div class="card span2">
+      <div class="card-head"><h3>Evolução do patrimônio</h3><div class="legend"><span><i style="background:var(--chart-line)"></i>Patrimônio</span><span><i style="background:var(--muted)"></i>Total aportado</span></div></div>
+      ${lineChart(a)}
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Próximo prêmio</h3><span class="badge gold">por lucro</span></div>
+      ${pr ? `
+        <div><div style="font-weight:700;font-size:1.1rem">${esc(pr.nome)}</div><div class="muted" style="font-size:.88rem">${esc(pr.detalhe)}</div></div>
+        <div class="bar light up"><i style="width:${(progPr * 100).toFixed(1)}%"></i></div>
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;gap:8px;flex-wrap:wrap"><span class="num">${brl(a.lucroTotal)} / ${brl(pr.meta)}</span><span class="muted">faltam <b class="num" style="color:var(--ink)">${brl(pr.meta - a.lucroTotal)}</b></span></div>`
+      : `<div>Você conquistou todos os prêmios. Lenda.</div>`}
+      <div style="border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:6px">
+        ${CONFIG.premios.slice(0, 4).map(p => `<div style="display:flex;justify-content:space-between;gap:8px;font-size:.88rem"><span>${esc(p.nome)}</span>${a.lucroTotal >= p.meta ? '<span class="badge ok">ganho</span>' : `<span class="num muted">${brl(p.meta)}</span>`}</div>`).join("")}
+      </div>
+    </div>
+  </div>
+
+  <div class="grid g3">
+    <div class="card span2">
+      <div class="card-head"><h3>Lucro por mês</h3><span class="muted" style="font-size:.85rem">${a.sequencia} ${a.sequencia === 1 ? "mês seguido" : "meses seguidos"} no positivo</span></div>
+      ${barChart(a)}
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Sua disputa do mês</h3><span class="muted" style="font-size:.85rem">lucro em ${CONFIG.meses[LAST]}</span></div>
+      ${acima ? `<div class="rival">
+        <div class="p me"><div class="eyebrow">${posMes}º · você</div><div class="n">${esc(a.apelido)}</div><div class="num">${brl(rk[i].v)}</div></div>
+        <div class="vs">VS</div>
+        <div class="p"><div class="eyebrow">${posMes - 1}º</div><div class="n">${esc(acima.a.apelido)}</div><div class="num">${brl(acima.v)}</div></div>
+      </div>
+      <div style="font-size:.92rem">Faltam <b class="num">${brl(acima.v - rk[i].v + 1)}</b> de lucro para você passar ${esc(acima.a.apelido.split(" ")[0])} e subir para <b>${posMes - 1}º</b>.</div>`
+      : `<div style="font-size:.95rem">Você lidera o mês. 🏆</div>`}
+      ${abaixo ? `<div class="note">Logo atrás: ${esc(abaixo.a.apelido)} com ${brl(abaixo.v)}, a ${brl(rk[i].v - abaixo.v)} de você.</div>` : ""}
+      <a href="#ranking" class="tab" style="text-align:center;text-decoration:none">Ver ranking completo</a>
+    </div>
+  </div>`;
+}
+
+function viewRanking() {
+  const P = PERIODOS[state.periodo], M = METRICAS[state.metrica];
+  const tabs = Object.entries(METRICAS).map(([k, m]) => `<button class="tab" data-metrica="${k}" aria-pressed="${k === state.metrica}">${m.nome}</button>`).join("") +
+    `<button class="tab" data-metrica="clas" aria-pressed="${state.metrica === "clas"}">Clãs</button>`;
+  const seg = `<div class="seg" role="group" aria-label="Período">${Object.entries(PERIODOS).map(([k, p]) => `<button data-periodo="${k}" aria-pressed="${k === state.periodo}">${k === "mes" ? p.nome : k === "temporada" ? "Temporada" : "Geral"}</button>`).join("")}</div>`;
+  const head = `<div class="controls"><div class="tabs">${tabs}</div>${state.metrica === "capital" ? '<span class="note">Patrimônio atual, sem período</span>' : seg}</div>`;
+
+  if (state.metrica === "clas") {
+    const cr = clasRanking(P.idx);
+    return head + `<div class="card"><div class="card-head"><h3>Guerra de Clãs · ${P.nome}</h3><span class="note">Média de rentabilidade dos membros</span></div>
+      ${cr.map((c, i) => `<div class="clan"><div class="ico" style="background:${c.cor}">${i + 1}</div>
+        <div style="min-width:0"><div style="font-weight:700">${c.nome}</div><div class="note">${c.membros} membros · lucro somado ${brl(c.lucro)}${c.mvp ? ` · destaque: ${esc(c.mvp.apelido)}` : ""}</div></div>
+        <div class="num ${c.media >= 0 ? "up" : "down"}" style="font-weight:600">${pct(c.media)}</div></div>`).join("")}</div>`;
+  }
+
+  const idx = state.metrica === "capital" ? PERIODOS.geral.idx : P.idx;
+  const prevIdx = state.metrica === "capital" ? PERIODOS.geral.prev : P.prev;
+  const rk = ranking(state.metrica, idx);
+  const prevRk = prevIdx.length ? ranking(state.metrica, prevIdx) : [];
+  const prevPos = id => { const j = prevRk.findIndex(x => x.a.id === id); return j < 0 ? null : j + 1; };
+  const top = rk.slice(0, 3);
+  const pod = (x, n) => x ? `<div class="pod p${n}">${avatar(x.a)}<div class="pos">${n}º</div><div class="n">${esc(x.a.apelido)}</div><div class="v ${state.metrica === "lucro" || state.metrica === "rent" ? (x.v >= 0 ? "up" : "down") : ""}">${M.fmt(x.v)}</div>${placaPill(x.a)}</div>` : "<div></div>";
+  const rows = rk.map((x, i) => {
+    const pp = prevPos(x.a.id), d = pp == null ? null : pp - (i + 1);
+    return `<tr class="${x.a.id === state.me ? "me" : ""}"><td><span class="rank">${i + 1}</span>${prevIdx.length ? mv(d) : ""}</td><td>${who(x.a)}</td><td>${placaPill(x.a)}</td><td class="r num ${state.metrica === "lucro" || state.metrica === "rent" ? (x.v >= 0 ? "up" : "down") : ""}">${M.fmt(x.v)}</td></tr>`;
+  }).join("");
+  const regra = state.metrica === "rent" ? `<span class="note">Patrimônio mínimo de ${brl(CONFIG.campeonato.capitalMinimo)} para entrar</span>` : `<span class="note">${rk.length} participantes</span>`;
+  return head + `
+    <div class="podium">${pod(top[1], 2)}${pod(top[0], 1)}${pod(top[2], 3)}</div>
+    <div class="card"><div class="card-head"><h3>${M.nome} · ${state.metrica === "capital" ? "atual" : P.nome}</h3>${regra}</div>
+    <div class="table-wrap"><table><thead><tr><th>Pos.</th><th>Aluno</th><th>Placa</th><th class="r">${M.col}</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+function viewCampeonato() {
+  const C = CONFIG.campeonato, rk = ranking("rent", C.meses), meId = state.me;
+  const duelos = []; for (let i = 0; i + 1 < Math.min(rk.length, 12); i += 2) duelos.push([rk[i], rk[i + 1]]);
+  const cr = clasRanking(C.meses);
+  const posMe = rk.findIndex(x => x.a.id === meId) + 1;
+  return `
+  <div class="champ">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="eyebrow" style="color:inherit;opacity:.7">${C.temporada} · ${C.periodoTexto}</div>
+      <h1 style="font-size:clamp(2.2rem,5vw,3.4rem)">${C.nome}</h1>
+      <div style="opacity:.8">Disputa por rentabilidade. ${posMe ? `Você está em <b style="color:#f0cf8a">${posMe}º</b> de ${rk.length}.` : ""}</div>
+      <div class="countdown" id="countdown" aria-label="Tempo restante"></div>
+    </div>
+    <div class="payout">${C.premiacao.map(([p, v]) => `<div><span>${p}</span><b>${esc(v)}</b></div>`).join("")}</div>
+  </div>
+  <div class="grid g3">
+    <div class="card span2">
+      <div class="card-head"><h3>Classificação</h3><span class="note">${rk.length} na disputa</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Pos.</th><th>Aluno</th><th class="r">Lucro</th><th class="r">Rentab.</th></tr></thead><tbody>
+      ${rk.slice(0, 15).map((x, i) => `<tr class="${x.a.id === meId ? "me" : ""}"><td><span class="rank" style="${i < 3 ? "color:var(--gold)" : ""}">${i + 1}</span></td><td>${who(x.a)}</td><td class="r num">${brl(lucroP(x.a, C.meses))}</td><td class="r num ${x.v >= 0 ? "up" : "down"}">${pct(x.v)}</td></tr>`).join("")}
+      ${posMe > 15 ? `<tr class="me"><td><span class="rank">${posMe}</span></td><td>${who(me())}</td><td class="r num">${brl(lucroP(me(), C.meses))}</td><td class="r num">${pct(rk[posMe - 1].v)}</td></tr>` : ""}
+      </tbody></table></div>
+    </div>
+    <div class="card">
+      <h3>Regras</h3>
+      <ul class="rules">${C.regras.map(r => `<li>${esc(r)}</li>`).join("")}</ul>
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-head"><h3>Duelos 1x1</h3><span class="note">rentabilidade na temporada</span></div>
+      <div class="grid g2">${duelos.map(([p, q]) => {
+        const tot = Math.abs(p.v) + Math.abs(q.v) || 1, w = Math.max(8, Math.min(92, Math.abs(p.v) / tot * 100));
+        return `<div class="duel"><div class="row"><span class="n">${esc(p.a.apelido)}</span><span class="num up">${pct(p.v)}</span></div>
+          <div class="split"><i style="width:${w}%"></i><i style="width:${100 - w}%"></i></div>
+          <div class="row"><span class="n muted">${esc(q.a.apelido)}</span><span class="num muted">${pct(q.v)}</span></div></div>`;
+      }).join("")}</div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Guerra de Clãs</h3><span class="note">média dos membros</span></div>
+      ${cr.map((c, i) => `<div class="clan"><div class="ico" style="background:${c.cor}">${i + 1}</div><div style="min-width:0"><div style="font-weight:700">${c.nome}</div><div class="note">${c.membros} membros${c.mvp ? " · destaque " + esc(c.mvp.apelido) : ""}</div></div><div class="num up" style="font-weight:600">${pct(c.media)}</div></div>`).join("")}
+    </div>
+  </div>`;
+}
+
+function viewPlacas() {
+  const a = me(), cur = placaDe(a.patrimonio);
+  const cont = t => ALUNOS.filter(x => placaDe(x.patrimonio) === t).length;
+  return `
+  <div class="card">
+    <div class="card-head"><div><h2>Trilha de placas</h2><div class="muted" style="font-size:.9rem">Conquistadas pelo patrimônio na conta copiada (aportes + lucro).</div></div><span class="badge gold">Sua placa: ${cur.nome}</span></div>
+    <div class="tiers">${CONFIG.placas.map(t => `<div class="tier ${a.patrimonio >= t.min ? "" : "locked"} ${t === cur ? "cur" : ""}">${shield(t, 56)}<div class="nm">${t.nome}</div><div class="num" style="font-size:.85rem">${t.min ? "a partir de " + brl(t.min) : "entrada"}</div><div class="note">${cont(t)} ${cont(t) === 1 ? "aluno" : "alunos"}</div></div>`).join("")}</div>
+  </div>
+  <div class="card">
+    <div class="card-head"><div><h2>Prêmios por lucro</h2><div class="muted" style="font-size:.9rem">Liberados quando o lucro acumulado passa da meta.</div></div><span class="num muted">seu lucro: ${brl(a.lucroTotal)}</span></div>
+    <div class="prize-list">${CONFIG.premios.map(p => {
+      const ok = a.lucroTotal >= p.meta, n = ALUNOS.filter(x => x.lucroTotal >= p.meta).length;
+      return `<div class="prize"><div class="meta">${brl(p.meta)}</div><div style="min-width:0"><div style="font-weight:700">${esc(p.nome)}</div><div class="note">${esc(p.detalhe)} · ${n} ${n === 1 ? "aluno conquistou" : "alunos conquistaram"}</div></div>${ok ? '<span class="badge ok">Conquistado</span>' : `<span class="badge no">faltam ${brl(p.meta - a.lucroTotal)}</span>`}</div>`;
+    }).join("")}</div>
+  </div>`;
+}
+
+function viewHall() {
+  const ev = eventos().slice(0, 14);
+  const campeoes = CONFIG.meses.map((m, i) => ({ m, x: ranking("rent", [i])[0] })).filter(c => c.x).reverse();
+  let recLucro = null, recApo = null, recSeq = null;
+  ALUNOS.forEach(a => {
+    a.lucro.forEach((v, i) => { if (!recLucro || v > recLucro.v) recLucro = { a, v, m: CONFIG.meses[i] }; });
+    a.aportes.forEach((v, i) => { if (!recApo || v > recApo.v) recApo = { a, v, m: CONFIG.meses[i] }; });
+    if (!recSeq || a.sequencia > recSeq.v) recSeq = { a, v: a.sequencia };
+  });
+  return `
+  <div class="grid g3">
+    <div class="card"><div class="eyebrow">Recorde de lucro em um mês</div><div class="stat"><div class="v up">${brl(recLucro.v)}</div></div><div>${esc(recLucro.a.nome)} <span class="muted">· ${recLucro.m}</span></div></div>
+    <div class="card"><div class="eyebrow">Maior aporte</div><div class="stat"><div class="v">${brl(recApo.v)}</div></div><div>${esc(recApo.a.nome)} <span class="muted">· ${recApo.m}</span></div></div>
+    <div class="card"><div class="eyebrow">Maior sequência no verde</div><div class="stat"><div class="v">${recSeq.v} meses</div></div><div>${esc(recSeq.a.nome)}</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="card">
+      <div class="card-head"><h3>Campeões do mês</h3><span class="note">maior rentabilidade</span></div>
+      <div class="feed">${campeoes.map(c => `<div class="feed-item"><span class="rank" style="color:var(--gold)">${c.m}</span>${who(c.x.a)}<span class="num up">${pct(c.x.v)}</span></div>`).join("")}</div>
+    </div>
+    <div class="card">
+      <div class="card-head"><h3>Conquistas recentes</h3><span class="chip live">ao vivo</span></div>
+      <div class="feed">${ev.map(e => `<div class="feed-item">${e.tipo === "placa" ? shield(e.t, 26) : `<svg viewBox="0 0 24 24" fill="none" stroke="var(--up)" stroke-width="2" aria-hidden="true">${ICON.campeonato}</svg>`}<div style="min-width:0"><b>${esc(e.a.apelido)}</b> ${e.txt}</div><span class="note">${CONFIG.meses[e.m]}</span></div>`).join("")}</div>
+    </div>
+  </div>`;
+}
+
+/* =====================================================================
+   NAVEGAÇÃO
+   ===================================================================== */
+let timer;
+function tick() {
+  const el = document.getElementById("countdown"); if (!el) return;
+  let s = Math.max(0, (new Date(CONFIG.campeonato.fim) - new Date()) / 1000);
+  const d = Math.floor(s / 86400); s -= d * 86400; const h = Math.floor(s / 3600); s -= h * 3600; const m = Math.floor(s / 60);
+  el.innerHTML = [[d, "dias"], [h, "horas"], [m, "min"]].map(([v, l]) => `<div><b>${String(v).padStart(2, "0")}</b><span>${l}</span></div>`).join("");
+}
+function render() {
+  const v = document.getElementById("view");
+  const fn = { painel: viewPainel, ranking: viewRanking, campeonato: viewCampeonato, placas: viewPlacas, hall: viewHall }[state.view];
+  v.innerHTML = fn();
+  v.classList.remove("view-enter"); void v.offsetWidth; v.classList.add("view-enter");
+  document.querySelectorAll(".nav a").forEach(a => { const on = a.dataset.v === state.view; a.setAttribute("aria-current", on ? "page" : "false"); if (on && innerWidth <= 820) a.scrollIntoView({ block: "nearest", inline: "nearest" }); });
+  document.getElementById("crumb").innerHTML = `${VIEWS[state.view]} <span>· ${esc(me().nome)}</span>`;
+  clearInterval(timer); if (state.view === "campeonato") { tick(); timer = setInterval(tick, 30000); }
+}
+function boot() {
+  document.getElementById("brand").innerHTML = `${esc(CONFIG.marca[0])} <b>${esc(CONFIG.marca[1])}</b>`;
+  document.getElementById("nav").innerHTML = Object.entries(VIEWS).map(([k, n]) => `<a href="#${k}" data-v="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>${n}</a>`).join("");
+  const opts = ALUNOS.slice().sort((x, y) => x.nome.localeCompare(y.nome)).map(a => `<option value="${a.id}">${esc(a.nome)}</option>`).join("");
+  ["viewas", "viewas-m"].forEach(id => { const s = document.getElementById(id); s.innerHTML = opts; s.value = state.me; s.addEventListener("change", e => { state.me = e.target.value; document.querySelectorAll("#viewas,#viewas-m").forEach(o => o.value = state.me); save(); render(); }); });
+  document.getElementById("updated").textContent = "Atualizado em " + new Date(CONFIG.atualizadoEm + "T12:00:00").toLocaleDateString("pt-BR");
+  document.getElementById("view").addEventListener("click", e => {
+    const b = e.target.closest("[data-metrica],[data-periodo]"); if (!b) return;
+    if (b.dataset.metrica) state.metrica = b.dataset.metrica;
+    if (b.dataset.periodo) state.periodo = b.dataset.periodo;
+    save(); render();
+  });
+  const fromHash = () => { const h = location.hash.slice(1); state.view = VIEWS[h] ? h : "painel"; render(); window.scrollTo(0, 0); };
+  window.addEventListener("hashchange", fromHash);
+  fromHash();
+}
+boot();
+</script>
