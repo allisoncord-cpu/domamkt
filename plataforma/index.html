@@ -16,11 +16,13 @@
   --brand: #0f1d18;
   --brand-ink: #ece7dc;
   --gold: #9c7420;
+  --on-gold: #ffffff;
   --gold-soft: #f4ead3;
   --gold-hi: #f1d58c;
   --up: #12804c;
   --up-soft: #e1f3e9;
   --down: #c13d2c;
+  --down-soft: #fbe6e2;
   --chart-line: #0f4a35;
   --chart-fill: rgba(15,74,53,.10);
   --chart-grid: #e6e2dc;
@@ -32,20 +34,20 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0d1110; --surface: #151a19; --surface-2: #1a201f; --ink: #ebe8e2; --muted: #9aa19e; --line: #28302e;
-    --brand: #0a1411; --gold: #e0b95c; --gold-soft: #33291a; --up: #3ccf88; --up-soft: #12291e; --down: #ff7a66;
+    --brand: #0a1411; --gold: #e0b95c; --on-gold: #1a1408; --gold-soft: #33291a; --up: #3ccf88; --up-soft: #12291e; --down: #ff7a66; --down-soft: #3a1c18;
     --chart-line: #e0b95c; --chart-fill: rgba(224,185,92,.13); --chart-grid: #232b29;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0d1110; --surface: #151a19; --surface-2: #1a201f; --ink: #ebe8e2; --muted: #9aa19e; --line: #28302e;
-  --brand: #0a1411; --gold: #e0b95c; --gold-soft: #33291a; --up: #3ccf88; --up-soft: #12291e; --down: #ff7a66;
+  --brand: #0a1411; --gold: #e0b95c; --on-gold: #1a1408; --gold-soft: #33291a; --up: #3ccf88; --up-soft: #12291e; --down: #ff7a66; --down-soft: #3a1c18;
   --chart-line: #e0b95c; --chart-fill: rgba(224,185,92,.13); --chart-grid: #232b29;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body); }
-button, select { font: inherit; color: inherit; }
+button, select, input, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; border-radius: 6px; }
 .num { font-variant-numeric: tabular-nums; font-weight: 600; }
 .up { color: var(--up); } .down { color: var(--down); } .muted { color: var(--muted); }
@@ -65,14 +67,16 @@ h3 { font-size: 1.05rem; }
 .brand b { font-family: var(--f-caps); font-weight: 500; letter-spacing: .3em; font-size: 1rem; color: var(--gold-hi); line-height: 1.1; }
 .brand span { font-family: var(--f-caps); font-size: .58rem; letter-spacing: .38em; opacity: .65; }
 .nav { display: flex; flex-direction: column; gap: 4px; }
+.nav .grp { font-family: var(--f-caps); font-size: .58rem; letter-spacing: .18em; text-transform: uppercase; opacity: .45; padding: 12px 12px 4px; }
 .nav a { color: var(--brand-ink); text-decoration: none; padding: 10px 12px; border-radius: 10px; font-weight: 600; display: flex; align-items: center; gap: 10px; opacity: .74; white-space: nowrap; }
 .nav a:hover { opacity: 1; background: rgba(255,255,255,.05); }
 .nav a[aria-current="page"] { opacity: 1; background: rgba(241,213,140,.1); color: var(--gold-hi); }
 .nav svg { width: 18px; height: 18px; flex: none; }
-.side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 8px; font-size: .8rem; }
-.side-foot label { opacity: .7; }
-.side-foot select { background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); color: var(--brand-ink); border-radius: 8px; padding: 8px; width: 100%; }
-.side-foot select option { color: #17191c; background: #fff; }
+.nav .count { margin-left: auto; background: #e0b95c; color: #1a1408; font-size: .72rem; font-weight: 700; border-radius: 999px; padding: 0 7px; min-width: 20px; text-align: center; }
+.side-foot { margin-top: auto; display: flex; flex-direction: column; gap: 10px; font-size: .82rem; }
+.who-box { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 12px; background: rgba(255,255,255,.05); }
+.who-box small { display: block; opacity: .6; font-size: .72rem; }
+.link-btn { background: none; border: 0; color: var(--gold-hi); cursor: pointer; padding: 0; font-weight: 600; text-align: left; }
 .demo-tag { font-family: var(--f-caps); font-size: .6rem; text-transform: uppercase; letter-spacing: .14em; background: rgba(241,213,140,.14); color: var(--gold-hi); padding: 3px 9px; border-radius: 999px; align-self: flex-start; }
 
 main { padding: 24px clamp(16px, 3vw, 40px) 48px; display: flex; flex-direction: column; gap: 24px; min-width: 0; }
@@ -89,6 +93,52 @@ main { padding: 24px clamp(16px, 3vw, 40px) 48px; display: flex; flex-direction:
 .span2 { grid-column: span 2; }
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
 .card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.banner { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; background: var(--gold-soft); border: 1px solid var(--gold); border-radius: var(--r); padding: 14px 18px; }
+
+/* ---------- formulários e botões ---------- */
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+.form-grid .full { grid-column: 1 / -1; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field label { font-size: .82rem; font-weight: 600; }
+.field small { color: var(--muted); font-size: .76rem; }
+.field input, .field select, .field textarea, .inp { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 10px 12px; width: 100%; min-width: 0; }
+.field textarea { min-height: 70px; resize: vertical; }
+.inp.sm { padding: 6px 10px; }
+.btn { border: 1px solid var(--line); background: var(--surface-2); border-radius: 10px; padding: 10px 16px; font-weight: 700; cursor: pointer; color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
+.btn:hover { border-color: var(--muted); }
+.btn.primary { background: var(--gold); border-color: var(--gold); color: var(--on-gold); }
+.btn.ok { background: var(--up); border-color: var(--up); color: #fff; }
+.btn.danger { color: var(--down); }
+.btn.sm { padding: 6px 12px; font-size: .85rem; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.row-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.drop { border: 2px dashed var(--line); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; background: var(--surface-2); }
+.drop:hover, .drop.over { border-color: var(--gold); }
+.drop img { max-height: 240px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.status { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.status.pendente, .status.a_produzir { background: var(--gold-soft); color: var(--gold); }
+.status.aprovado, .status.entregue { background: var(--up-soft); color: var(--up); }
+.status.recusado { background: var(--down-soft); color: var(--down); }
+.status.producao, .status.enviado { background: var(--surface-2); color: var(--ink); border: 1px solid var(--line); }
+
+/* ---------- fila de aprovação ---------- */
+.queue { display: flex; flex-direction: column; gap: 14px; }
+.q-item { display: grid; grid-template-columns: 150px minmax(0,1fr) minmax(0, 300px); gap: 18px; align-items: start; border: 1px solid var(--line); border-radius: var(--r); padding: 16px; background: var(--surface); }
+.q-item .thumb { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: top; border-radius: 8px; border: 1px solid var(--line); cursor: zoom-in; background: var(--surface-2); }
+.q-item dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; font-size: .9rem; }
+.q-item dt { color: var(--muted); }
+.q-item dd { margin: 0; font-weight: 600; }
+.q-act { display: flex; flex-direction: column; gap: 10px; }
+.lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.82); display: grid; place-items: center; z-index: 50; padding: 24px; cursor: zoom-out; }
+.lightbox img { max-width: 92vw; max-height: 88vh; border-radius: 8px; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 12px 18px; border-radius: 12px; font-weight: 600; z-index: 60; max-width: calc(100vw - 32px); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+
+/* ---------- login ---------- */
+.login { min-height: 100vh; display: grid; place-items: center; background: var(--brand); color: var(--brand-ink); padding: 24px 16px; }
+.login-card { width: min(440px, 100%); background: var(--surface); color: var(--ink); border-radius: 18px; padding: 28px; display: flex; flex-direction: column; gap: 16px; }
+.login-mark { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 4px; }
+.login-mark svg { width: 56px; }
+.login-mark b { font-family: var(--f-caps); letter-spacing: .3em; color: var(--gold); }
 
 /* ---------- quadro (placa física em miniatura) ---------- */
 .plaque { container-type: inline-size; width: 100%; aspect-ratio: 4 / 5; border-radius: 3px; padding: 9%;
@@ -128,6 +178,8 @@ main { padding: 24px clamp(16px, 3vw, 40px) 48px; display: flex; flex-direction:
 
 .stat .v { font-size: 1.5rem; font-weight: 700; line-height: 1.2; font-variant-numeric: tabular-nums; }
 .stat .d { font-size: .82rem; }
+a.card.stat { text-decoration: none; color: inherit; }
+a.card.stat:hover { border-color: var(--gold); }
 
 /* ---------- disputa ---------- */
 .rival { display: grid; grid-template-columns: 1fr auto 1fr; gap: 10px; align-items: center; }
@@ -141,10 +193,12 @@ main { padding: 24px clamp(16px, 3vw, 40px) 48px; display: flex; flex-direction:
 .tab { border: 1px solid var(--line); background: var(--surface); padding: 7px 14px; border-radius: 999px; cursor: pointer; font-weight: 600; font-size: .88rem; color: var(--muted); text-decoration: none; }
 .tab:hover { color: var(--ink); }
 .tab[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-.seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
-.seg button { border: 0; background: none; padding: 5px 12px; border-radius: 7px; cursor: pointer; font-size: .85rem; font-weight: 600; color: var(--muted); }
+.seg { display: inline-flex; max-width: 100%; overflow-x: auto; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
+.seg button { white-space: nowrap; border: 0; background: none; padding: 5px 12px; border-radius: 7px; cursor: pointer; font-size: .85rem; font-weight: 600; color: var(--muted); }
 .seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.12); }
 .controls { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+.controls > * { min-width: 0; max-width: 100%; }
+.grid > * { min-width: 0; }
 
 .podium { display: grid; grid-template-columns: 1fr 1.15fr 1fr; gap: 12px; align-items: end; }
 .pod { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 12px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; }
@@ -163,6 +217,8 @@ td { padding: 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
 tr:last-child td { border-bottom: 0; }
 td.r, th.r { text-align: right; }
 tr.me td { background: var(--gold-soft); }
+tr.click { cursor: pointer; }
+tr.click:hover td { background: var(--surface-2); }
 .who { display: flex; align-items: center; gap: 10px; }
 .who .avatar { width: 32px; height: 32px; font-size: .75rem; }
 .who small { display: block; color: var(--muted); font-size: .76rem; }
@@ -208,7 +264,7 @@ tr.me td { background: var(--gold-soft); }
 .clan:last-child { border-bottom: 0; }
 .clan .ico { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; font-family: var(--f-serif); font-weight: 700; font-size: 1.2rem; color: #fff; }
 
-/* ---------- hall ---------- */
+/* ---------- feed ---------- */
 .feed { display: flex; flex-direction: column; }
 .feed-item { display: grid; grid-template-columns: 30px minmax(0,1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .9rem; }
 .feed-item:last-child { border-bottom: 0; }
@@ -219,14 +275,16 @@ svg text { fill: var(--muted); font-family: var(--f-body); font-size: 11px; }
 .legend { display: flex; gap: 14px; font-size: .8rem; color: var(--muted); flex-wrap: wrap; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
 .note { font-size: .8rem; color: var(--muted); }
-.viewas-mobile { display: none; align-items: center; gap: 8px; font-size: .85rem; }
-.viewas-mobile select { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 6px 8px; max-width: 60vw; }
+.empty-state { text-align: center; padding: 28px 12px; color: var(--muted); }
+.mobile-only { display: none; }
 
 @media (max-width: 1180px) {
   .g4 { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .g3 { grid-template-columns: repeat(2, minmax(0,1fr)); }
   .hero, .champ { grid-template-columns: 1fr; }
   .wall { grid-template-columns: repeat(3, minmax(0,1fr)); }
+  .q-item { grid-template-columns: 120px minmax(0,1fr); }
+  .q-act { grid-column: 1 / -1; }
 }
 @media (max-width: 820px) {
   .app { grid-template-columns: minmax(0,1fr); }
@@ -235,13 +293,15 @@ svg text { fill: var(--muted); font-family: var(--f-body); font-size: 11px; }
   .brand svg { width: 26px; }
   .brand div { display: none; }
   .nav { flex-direction: row; overflow-x: auto; gap: 2px; min-width: 0; flex: 1; scrollbar-width: none; }
+  .nav .grp { display: none; }
   .nav a { padding: 8px 10px; font-size: .88rem; }
   .nav a svg { display: none; }
   .side-foot { display: none; }
+  .mobile-only { display: flex; }
   .g2, .g3 { grid-template-columns: minmax(0,1fr); }
   .span2 { grid-column: auto; }
-  .viewas-mobile { display: flex; }
   .wall { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 16px; }
+  .form-grid { grid-template-columns: minmax(0,1fr); }
 }
 @media (max-width: 520px) {
   .g4 { grid-template-columns: 1fr 1fr; }
@@ -254,6 +314,7 @@ svg text { fill: var(--muted); font-family: var(--f-body); font-size: 11px; }
   .prize { grid-template-columns: 80px minmax(0,1fr); }
   .prize .badge { grid-column: 2; justify-self: start; }
   .stat .v { font-size: 1.2rem; }
+  .q-item { grid-template-columns: 90px minmax(0,1fr); gap: 12px; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .bar > i { transition: width .8s cubic-bezier(.2,.7,.2,1); }
@@ -262,40 +323,16 @@ svg text { fill: var(--muted); font-family: var(--f-body); font-size: 11px; }
 }
 </style>
 
-<div class="app">
-  <aside class="side">
-    <div class="brand" id="brand"></div>
-    <nav class="nav" id="nav" aria-label="Seções"></nav>
-    <div class="side-foot">
-      <span class="demo-tag">Modo demonstração</span>
-      <label for="viewas">Ver painel como</label>
-      <select id="viewas"></select>
-    </div>
-  </aside>
-  <main>
-    <div class="topbar">
-      <div class="crumb" id="crumb"></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
-        <div class="viewas-mobile"><label for="viewas-m">Ver como</label><select id="viewas-m"></select></div>
-        <span class="chip live" id="updated"></span>
-      </div>
-    </div>
-    <section id="view" class="grid"></section>
-  </main>
-</div>
+<div id="root"></div>
+<div id="overlay"></div>
 
 <script>
 /* =====================================================================
-   CONFIGURAÇÃO — ajuste aqui as regras da Legião
-   Todos os valores em dólar (US$).
+   CONFIGURAÇÃO — regras da Legião. Todos os valores em dólar (US$).
    ===================================================================== */
 const CONFIG = {
-  marca: { nome: "LEGATUS", sub: "GROUP FX", comunidade: "Legião Legatus" },
-  alunoLogado: "a33",                 // em produção vem do login
-  atualizadoEm: "2026-09-30",
-  meses: ["Mai", "Jun", "Jul", "Ago", "Set"],   // um valor por coluna em aportes/lucro
-  mesesLongos: ["Maio", "Junho", "Julho", "Agosto", "Setembro"],
-  // Quadros: conquistados pelo SALDO NA CONTA (aportes + lucro)
+  marca: { nome: "LEGATUS", sub: "GROUP FX", comunidade: "Legião Legatus", corretora: "RoboForex" },
+  // Quadros: conquistados pelo MAIOR SALDO já atingido na conta
   placas: [
     { id: "legionario",  nome: "Legionário",       pedra: "",          min: 0,      cor: "#3a3f45", frase: "A jornada começa." },
     { id: "smart",       nome: "Smart Move",       pedra: "Esmeralda", min: 10000,  cor: "#0d4a33", frase: "A jogada certa.",            quadro: "16 × 20 cm" },
@@ -304,7 +341,7 @@ const CONFIG = {
     { id: "nextmil",     nome: "Next Millionaire", pedra: "Ametista",  min: 100000, cor: "#3b1a64", frase: "O próximo milionário.",      quadro: "28 × 35 cm" },
     { id: "millionaire", nome: "Millionaire",      pedra: "Ônix",      min: 200000, cor: "#121212", frase: "O primeiro milhão.",         quadro: "32 × 40 cm", filete: true }
   ],
-  // Prêmios: conquistados pelo LUCRO ACUMULADO
+  // Prêmios: conquistados pelo LUCRO ACUMULADO (saldo − total aportado)
   premios: [
     { meta: 1000,   nome: "Kit Legião", detalhe: "Camiseta oficial + caneca" },
     { meta: 2500,   nome: "Moletom Legatus", detalhe: "Edição numerada" },
@@ -314,13 +351,12 @@ const CONFIG = {
     { meta: 50000,  nome: "iPhone", detalhe: "Modelo do ano" },
     { meta: 100000, nome: "Viagem internacional", detalhe: "Para 2 pessoas" }
   ],
-  // Campeonato: vence quem APORTA mais na temporada (a rentabilidade do copy é igual para todos)
+  // Campeonato: vence quem APORTA mais no período (a rentabilidade do copy é igual para todos)
   campeonato: {
     nome: "Copa dos Aportes",
     temporada: "Temporada 3",
-    meses: [3, 4],                    // índices de CONFIG.meses que já contam (Ago, Set)
-    periodoTexto: "Agosto a Outubro de 2026",
-    fim: "2026-10-31T23:59:00-03:00",
+    inicio: "2026-08-01",
+    fim: "2026-10-31",
     aporteMinimo: 500,
     premiacao: [
       ["1º lugar", "US$ 1.000 de bônus na conta + troféu"],
@@ -331,9 +367,9 @@ const CONFIG = {
     ],
     regras: [
       "Vence quem fizer o maior aporte líquido na temporada (depósitos menos saques).",
-      "Como a rentabilidade do copy é a mesma para todos, o lucro não conta para o campeonato.",
+      "Só contam aportes com comprovante aprovado pela administração.",
       "Aporte mínimo de US$ 500 na temporada para entrar na classificação.",
-      "Os aportes são conferidos na corretora no fechamento de cada mês.",
+      "O saldo inicial do cadastro não conta para a Copa.",
       "Duelos 1x1 são entre vizinhos de classificação."
     ]
   },
@@ -344,459 +380,808 @@ const CONFIG = {
     falcoes: { nome: "Falcões", cor: "#2f7a5f" }
   }
 };
+const C = CONFIG.campeonato;
 
 /* =====================================================================
-   DADOS — valores de EXEMPLO, em US$. Em produção vêm da corretora/planilha.
-   aportes e lucro: um número por mês, na ordem de CONFIG.meses.
-   Opcional: saques: [...] no mesmo formato.
+   DADOS DE EXEMPLO — usados só na primeira abertura (modo demonstração)
+   [id, nome, cidade, clã, aportes de mai..set/2026]
    ===================================================================== */
-const ALUNOS = [
-    {id: "a01", nome: "Rafael Monteiro", apelido: "Rafael M.", cidade: "Porto Alegre/RS", cla: "aguias", aportes: [0, 0, 0, 90000, 25000], lucro: [0, 0, 0, -1260, 5232]},
-    {id: "a02", nome: "Juliana Prado", apelido: "Juliana P.", cidade: "São Paulo/SP", cla: "leoes", aportes: [150000, 3000, 15000, 0, 0], lucro: [7800, 6593, 10579, -2702, 8752]},
-    {id: "a03", nome: "Bruno Carvalho", apelido: "Bruno C.", cidade: "Curitiba/PR", cla: "lobos", aportes: [0, 0, 90000, 0, 0], lucro: [0, 0, 5220, -1333, 4319]},
-    {id: "a04", nome: "Camila Rocha", apelido: "Camila R.", cidade: "Porto Alegre/RS", cla: "falcoes", aportes: [2000, 0, 0, 0, 25000], lucro: [104, 86, 127, -32, 1255]},
-    {id: "a05", nome: "Diego Nascimento", apelido: "Diego N.", cidade: "Campinas/SP", cla: "aguias", aportes: [0, 0, 0, 0, 12000], lucro: [0, 0, 0, 0, 552]},
-    {id: "a06", nome: "Fernanda Lima", apelido: "Fernanda L.", cidade: "Miami/EUA", cla: "leoes", aportes: [3000, 8000, 0, 0, 0], lucro: [156, 457, 674, -172, 557]},
-    {id: "a07", nome: "Gustavo Pires", apelido: "Gustavo P.", cidade: "Florianópolis/SC", cla: "lobos", aportes: [0, 22000, 0, 25000, 0], lucro: [0, 902, 1328, -689, 2233]},
-    {id: "a08", nome: "Helena Duarte", apelido: "Helena D.", cidade: "São Paulo/SP", cla: "falcoes", aportes: [18000, 500, 0, 2000, 0], lucro: [936, 797, 1174, -328, 1062]},
-    {id: "a09", nome: "Igor Batista", apelido: "Igor B.", cidade: "Fortaleza/CE", cla: "aguias", aportes: [0, 0, 0, 40000, 25000], lucro: [0, 0, 0, -560, 2964]},
-    {id: "a10", nome: "Larissa Mendes", apelido: "Larissa M.", cidade: "Miami/EUA", cla: "leoes", aportes: [15000, 5000, 8000, 0, 2000], lucro: [780, 852, 1719, -439, 1514]},
-    {id: "a11", nome: "Marcelo Teixeira", apelido: "Marcelo T.", cidade: "Porto Alegre/RS", cla: "lobos", aportes: [1000, 0, 0, 0, 15000], lucro: [52, 43, 64, -16, 743]},
-    {id: "a12", nome: "Natália Freitas", apelido: "Natália F.", cidade: "Porto Alegre/RS", cla: "falcoes", aportes: [60000, 8000, 0, 25000, 500], lucro: [3120, 2916, 4294, -1447, 4710]},
-    {id: "a13", nome: "Otávio Ramos", apelido: "Otávio R.", cidade: "Recife/PE", cla: "aguias", aportes: [40000, 1500, 0, 0, 0], lucro: [2080, 1787, 2631, -672, 2177]},
-    {id: "a14", nome: "Patrícia Gomes", apelido: "Patrícia G.", cidade: "Brasília/DF", cla: "leoes", aportes: [0, 40000, 2000, 0, 0], lucro: [0, 1640, 2531, -646, 2094]},
-    {id: "a15", nome: "Renato Alves", apelido: "Renato A.", cidade: "Belo Horizonte/MG", cla: "lobos", aportes: [0, 30000, 25000, 25000, 8000], lucro: [0, 1230, 3261, -1183, 4200]},
-    {id: "a16", nome: "Sabrina Castro", apelido: "Sabrina C.", cidade: "Campinas/SP", cla: "falcoes", aportes: [18000, 0, 2000, 15000, 8000], lucro: [936, 776, 1259, -532, 2090]},
-    {id: "a17", nome: "Thiago Moreira", apelido: "Thiago M.", cidade: "Florianópolis/SC", cla: "aguias", aportes: [60000, 500, 0, 0, 0], lucro: [3120, 2608, 3841, -981, 3178]},
-    {id: "a18", nome: "Vanessa Ribeiro", apelido: "Vanessa R.", cidade: "Belo Horizonte/MG", cla: "leoes", aportes: [0, 60000, 1500, 0, 0], lucro: [0, 2460, 3710, -947, 3069]},
-    {id: "a19", nome: "William Souza", apelido: "William S.", cidade: "Florianópolis/SC", cla: "lobos", aportes: [150000, 0, 0, 0, 3000], lucro: [7800, 6470, 9528, -2433, 8021]},
-    {id: "a20", nome: "Yasmin Araújo", apelido: "Yasmin A.", cidade: "Recife/PE", cla: "falcoes", aportes: [0, 0, 0, 12000, 3000], lucro: [0, 0, 0, -168, 682]},
-    {id: "a21", nome: "André Farias", apelido: "André F.", cidade: "Recife/PE", cla: "aguias", aportes: [0, 0, 0, 0, 6000], lucro: [0, 0, 0, 0, 276]},
-    {id: "a22", nome: "Beatriz Cunha", apelido: "Beatriz C.", cidade: "Campinas/SP", cla: "leoes", aportes: [90000, 0, 0, 1500, 500], lucro: [4680, 3882, 5717, -1481, 4821]},
-    {id: "a23", nome: "Caio Barros", apelido: "Caio B.", cidade: "Recife/PE", cla: "lobos", aportes: [0, 18000, 1000, 0, 0], lucro: [0, 738, 1145, -292, 947]},
-    {id: "a24", nome: "Daniela Moura", apelido: "Daniela M.", cidade: "Recife/PE", cla: "falcoes", aportes: [3000, 0, 0, 1500, 0], lucro: [156, 129, 191, -70, 226]},
-    {id: "a25", nome: "Eduardo Pinto", apelido: "Eduardo P.", cidade: "Campinas/SP", cla: "aguias", aportes: [0, 3000, 0, 0, 500], lucro: [0, 123, 181, -46, 173]},
-    {id: "a26", nome: "Flávia Nogueira", apelido: "Flávia N.", cidade: "Miami/EUA", cla: "leoes", aportes: [40000, 25000, 1000, 3000, 0], lucro: [2080, 2750, 4108, -1091, 3535]},
-    {id: "a27", nome: "Gabriel Rezende", apelido: "Gabriel R.", cidade: "Curitiba/PR", cla: "lobos", aportes: [0, 40000, 15000, 15000, 25000], lucro: [0, 1640, 3285, -1049, 4548]},
-    {id: "a28", nome: "Isabela Martins", apelido: "Isabela M.", cidade: "Curitiba/PR", cla: "falcoes", aportes: [0, 0, 0, 1000, 0], lucro: [0, 0, 0, -14, 45]},
-    {id: "a29", nome: "João Victor Lopes", apelido: "João L.", cidade: "Recife/PE", cla: "aguias", aportes: [0, 0, 0, 150000, 0], lucro: [0, 0, 0, -2100, 6803]},
-    {id: "a30", nome: "Karina Fonseca", apelido: "Karina F.", cidade: "Campinas/SP", cla: "leoes", aportes: [0, 6000, 0, 0, 10000], lucro: [0, 246, 362, -93, 760]},
-    {id: "a31", nome: "Leonardo Dias", apelido: "Leonardo D.", cidade: "Recife/PE", cla: "lobos", aportes: [22000, 2000, 2000, 0, 25000], lucro: [1144, 1031, 1634, -417, 2502]},
-    {id: "a32", nome: "Mariana Vieira", apelido: "Mariana V.", cidade: "Goiânia/GO", cla: "falcoes", aportes: [6000, 0, 0, 0, 0], lucro: [312, 259, 381, -97, 315]},
-    {id: "a33", nome: "Nicolas Antunes", apelido: "Nicolas A.", cidade: "Miami/EUA", cla: "aguias", aportes: [5000, 2000, 0, 15000, 5000], lucro: [260, 298, 438, -322, 1273]},
-    {id: "a34", nome: "Priscila Tavares", apelido: "Priscila T.", cidade: "Goiânia/GO", cla: "leoes", aportes: [0, 0, 0, 22000, 0], lucro: [0, 0, 0, -308, 998]},
-    {id: "a35", nome: "Rodrigo Campos", apelido: "Rodrigo C.", cidade: "Porto Alegre/RS", cla: "lobos", aportes: [15000, 25000, 1500, 2000, 3000], lucro: [780, 1672, 2549, -679, 2338]},
-    {id: "a36", nome: "Tatiane Correia", apelido: "Tatiane C.", cidade: "Curitiba/PR", cla: "falcoes", aportes: [2000, 0, 0, 0, 0], lucro: [104, 86, 127, -32, 105]}
+const SEED = [
+  ["a01", "Rafael Monteiro", "Porto Alegre/RS", "aguias", [0, 0, 0, 90000, 25000]],
+  ["a02", "Juliana Prado", "São Paulo/SP", "leoes", [150000, 3000, 15000, 0, 0]],
+  ["a03", "Bruno Carvalho", "Curitiba/PR", "lobos", [0, 0, 90000, 0, 0]],
+  ["a04", "Camila Rocha", "Porto Alegre/RS", "falcoes", [2000, 0, 0, 0, 25000]],
+  ["a05", "Diego Nascimento", "Campinas/SP", "aguias", [0, 0, 0, 0, 12000]],
+  ["a06", "Fernanda Lima", "Miami/EUA", "leoes", [3000, 8000, 0, 0, 0]],
+  ["a07", "Gustavo Pires", "Florianópolis/SC", "lobos", [0, 22000, 0, 25000, 0]],
+  ["a08", "Helena Duarte", "São Paulo/SP", "falcoes", [18000, 500, 0, 2000, 0]],
+  ["a09", "Igor Batista", "Fortaleza/CE", "aguias", [0, 0, 0, 40000, 25000]],
+  ["a10", "Larissa Mendes", "Miami/EUA", "leoes", [15000, 5000, 8000, 0, 2000]],
+  ["a11", "Marcelo Teixeira", "Porto Alegre/RS", "lobos", [1000, 0, 0, 0, 15000]],
+  ["a12", "Natália Freitas", "Porto Alegre/RS", "falcoes", [60000, 8000, 0, 25000, 500]],
+  ["a13", "Otávio Ramos", "Recife/PE", "aguias", [40000, 1500, 0, 0, 0]],
+  ["a14", "Patrícia Gomes", "Brasília/DF", "leoes", [0, 40000, 2000, 0, 0]],
+  ["a15", "Renato Alves", "Belo Horizonte/MG", "lobos", [0, 30000, 25000, 25000, 8000]],
+  ["a16", "Sabrina Castro", "Campinas/SP", "falcoes", [18000, 0, 2000, 15000, 8000]],
+  ["a17", "Thiago Moreira", "Florianópolis/SC", "aguias", [60000, 500, 0, 0, 0]],
+  ["a18", "Vanessa Ribeiro", "Belo Horizonte/MG", "leoes", [0, 60000, 1500, 0, 0]],
+  ["a19", "William Souza", "Florianópolis/SC", "lobos", [150000, 0, 0, 0, 3000]],
+  ["a20", "Yasmin Araújo", "Recife/PE", "falcoes", [0, 0, 0, 12000, 3000]],
+  ["a21", "André Farias", "Recife/PE", "aguias", [0, 0, 0, 0, 6000]],
+  ["a22", "Beatriz Cunha", "Campinas/SP", "leoes", [90000, 0, 0, 1500, 500]],
+  ["a23", "Caio Barros", "Recife/PE", "lobos", [0, 18000, 1000, 0, 0]],
+  ["a24", "Daniela Moura", "Recife/PE", "falcoes", [3000, 0, 0, 1500, 0]],
+  ["a25", "Eduardo Pinto", "Campinas/SP", "aguias", [0, 3000, 0, 0, 500]],
+  ["a26", "Flávia Nogueira", "Miami/EUA", "leoes", [40000, 25000, 1000, 3000, 0]],
+  ["a27", "Gabriel Rezende", "Curitiba/PR", "lobos", [0, 40000, 15000, 15000, 25000]],
+  ["a28", "Isabela Martins", "Curitiba/PR", "falcoes", [0, 0, 0, 1000, 0]],
+  ["a29", "João Victor Lopes", "Recife/PE", "aguias", [0, 0, 0, 150000, 0]],
+  ["a30", "Karina Fonseca", "Campinas/SP", "leoes", [0, 6000, 0, 0, 10000]],
+  ["a31", "Leonardo Dias", "Recife/PE", "lobos", [22000, 2000, 2000, 0, 25000]],
+  ["a32", "Mariana Vieira", "Goiânia/GO", "falcoes", [6000, 0, 0, 0, 0]],
+  ["a33", "Nicolas Antunes", "Miami/EUA", "aguias", [5000, 2000, 0, 15000, 5000]],
+  ["a34", "Priscila Tavares", "Goiânia/GO", "leoes", [0, 0, 0, 22000, 0]],
+  ["a35", "Rodrigo Campos", "Porto Alegre/RS", "lobos", [15000, 25000, 1500, 2000, 3000]],
+  ["a36", "Tatiane Correia", "Curitiba/PR", "falcoes", [2000, 0, 0, 0, 0]]
 ];
+const SEED_COPY = [["2026-05-31", 5.2], ["2026-06-30", 4.1], ["2026-07-31", 5.8], ["2026-08-31", -1.4], ["2026-09-30", 4.6]];
 
 /* =====================================================================
-   CÁLCULOS
+   UTILITÁRIOS
    ===================================================================== */
-const N = CONFIG.meses.length, LAST = N - 1;
+const pad = n => String(n).padStart(2, "0");
+const isoOf = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const HOJE = isoOf(new Date());
+const addDias = (iso, n) => { const d = new Date(iso + "T12:00:00"); d.setDate(d.getDate() + n); return isoOf(d); };
+const fimDoMes = (y, m) => isoOf(new Date(y, m + 1, 0)); // m: 0-11
+const MESES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+const MESES_L = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+const fmtData = iso => iso ? iso.split("-").reverse().join("/") : "—";
+const minIso = (a, b) => a < b ? a : b;
 const sum = a => a.reduce((s, v) => s + v, 0);
-const usd = v => (v < 0 ? "−" : "") + "US$ " + Math.abs(Math.round(v)).toLocaleString("pt-BR");
+const usd = v => (v < -0.5 ? "−" : "") + "US$ " + Math.abs(Math.round(v)).toLocaleString("pt-BR");
 const usdK = v => { const a = Math.abs(v); return (v < 0 ? "−" : "") + (a >= 1000 ? (a / 1000).toLocaleString("pt-BR", { maximumFractionDigits: 1 }) + "K" : String(Math.round(a))); };
-const pct = v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v * 100).toFixed(1).replace(".", ",") + "%";
-const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-const range = (a, b) => Array.from({ length: Math.max(0, b - a + 1) }, (_, i) => a + i);
+const pct = v => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1).replace(".", ",") + "%";
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const uid = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+const num = s => { const v = parseFloat(String(s).replace(/\./g, "").replace(",", ".")); return isFinite(v) ? v : NaN; };
+const ultimosMeses = (n, ate = HOJE) => { const [y, m] = ate.split("-").map(Number); const out = []; for (let i = n - 1; i >= 0; i--) { const d = new Date(y, m - 1 - i, 1); out.push({ y: d.getFullYear(), m: d.getMonth(), ini: isoOf(d), fim: fimDoMes(d.getFullYear(), d.getMonth()), label: MESES[d.getMonth()] }); } return out; };
 
-ALUNOS.forEach(a => {
-  a.saques = a.saques || Array(N).fill(0);
-  a.cap = []; let c = 0;
-  for (let m = 0; m < N; m++) { c += a.aportes[m] - a.saques[m] + a.lucro[m]; a.cap.push(c); }
-  a.saldo = c;
-  a.aportado = sum(a.aportes) - sum(a.saques);
-  a.lucroTotal = sum(a.lucro);
-  a.iniciais = a.nome.split(" ").filter(Boolean).map(p => p[0]).slice(0, 2).join("").toUpperCase();
-  let s = 0; for (let m = LAST; m >= 0 && a.aportes[m] > 0; m--) s++;
-  a.sequencia = s;   // meses seguidos aportando
-});
-const lucroP = (a, idx) => sum(idx.map(m => a.lucro[m]));
-const aporteP = (a, idx) => sum(idx.map(m => a.aportes[m] - a.saques[m]));
-const saldoAt = (a, idx) => a.cap[idx[idx.length - 1]];
-// rentabilidade do copy no mês (igual para todos): calculada a partir de qualquer conta ativa
-const rentCopy = m => { const a = ALUNOS.find(x => x.lucro[m]); if (!a) return 0; return a.lucro[m] / ((m ? a.cap[m - 1] : 0) + a.aportes[m] - a.saques[m]); };
+/* =====================================================================
+   ARMAZENAMENTO (demonstração: fica salvo neste navegador)
+   Em produção esta camada passa a falar com o banco de dados.
+   ===================================================================== */
+const KEY = "legatus-portal-v1";
+let DB;
+function demoReceipt(valor, data, conta) {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="520" viewBox="0 0 360 520"><rect width="360" height="520" fill="#f4f6f8"/><rect x="20" y="24" width="320" height="472" rx="16" fill="#fff" stroke="#dde2e8"/><circle cx="180" cy="96" r="30" fill="#e3f4ea"/><path d="M166 96l10 10 20-20" stroke="#15924f" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="180" y="160" text-anchor="middle" font-family="Arial" font-size="18" font-weight="700" fill="#1d2430">Depósito concluído</text><text x="180" y="212" text-anchor="middle" font-family="Arial" font-size="34" font-weight="700" fill="#1d2430">US$ ${Number(valor).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</text><g font-family="Arial" font-size="14" fill="#5b6573"><text x="44" y="276">Conta</text><text x="316" y="276" text-anchor="end" fill="#1d2430">${conta}</text><text x="44" y="310">Data</text><text x="316" y="310" text-anchor="end" fill="#1d2430">${fmtData(data)}</text><text x="44" y="344">Método</text><text x="316" y="344" text-anchor="end" fill="#1d2430">Transferência</text><text x="44" y="378">Status</text><text x="316" y="378" text-anchor="end" fill="#15924f">Creditado</text></g><line x1="44" y1="404" x2="316" y2="404" stroke="#e6e9ee"/><text x="180" y="456" text-anchor="middle" font-family="Arial" font-size="12" fill="#98a1ad">Comprovante de exemplo</text></svg>`;
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+}
+function seed() {
+  const alunos = [], lanc = [], envios = [];
+  SEED.forEach(([id, nome, cidade, cla, aps], i) => {
+    const conta = String(5300000 + i * 7919);
+    alunos.push({ id, nome, cidade, cla, conta, whatsapp: "", criadoEm: "2026-05-01" });
+    aps.forEach((v, m) => { if (v > 0) lanc.push({ id: uid("l"), aluno: id, tipo: "aporte", valor: v, data: `2026-${pad(5 + m)}-08`, origem: "admin" }); });
+  });
+  const copy = SEED_COPY.map(([data, p]) => ({ id: uid("c"), data, pct: p }));
+  // histórico de envios do aluno de exemplo (Nicolas)
+  const nic = lanc.filter(l => l.aluno === "a33");
+  nic.forEach(l => { const e = { id: uid("e"), aluno: "a33", valor: l.valor, data: l.data, saldo: null, obs: "", img: demoReceipt(l.valor, l.data, "5553327"), status: "aprovado", enviadoEm: l.data, decididoEm: addDias(l.data, 1) }; l.origem = "comprovante"; l.envio = e.id; envios.push(e); });
+  envios.push({ id: uid("e"), aluno: "a33", valor: 1000, data: "2026-09-12", saldo: null, obs: "", img: demoReceipt(1000, "2026-09-12", "5553327"), status: "recusado", motivo: "O print não mostra o valor creditado na conta.", enviadoEm: "2026-09-12", decididoEm: "2026-09-13" });
+  // envios aguardando aprovação
+  [["a33", 2500, "2026-09-30", null, "Aporte para subir na Copa"], ["a19", 5000, "2026-09-29", 196420, ""], ["a35", 2000, "2026-09-30", null, "Segundo aporte do mês"], ["a04", 3000, "2026-10-01", 31780, ""]].forEach(([al, v, d, s, o]) => {
+    const a = alunos.find(x => x.id === al);
+    envios.push({ id: uid("e"), aluno: al, valor: v, data: d, saldo: s, obs: o, img: demoReceipt(v, d, a.conta), status: "pendente", enviadoEm: d });
+  });
+  const db = { alunos, lanc, copy, envios, quadros: {} };
+  DB = db; limpaCache();
+  // quadros conquistados antes de setembro já foram entregues
+  alunos.forEach(a => { const e = estado(a.id); Object.entries(e.conq).forEach(([pid, d]) => { if (d < "2026-09-01") db.quadros[a.id + ":" + pid] = { status: "entregue", em: addDias(d, 20) }; }); });
+  return db;
+}
+function load() { try { const s = localStorage.getItem(KEY); if (s) { DB = JSON.parse(s); return; } } catch (e) {} DB = seed(); save(); }
+function save() {
+  limpaCache();
+  try { localStorage.setItem(KEY, JSON.stringify(DB)); return true; }
+  catch (e) { toast("Não deu para salvar neste navegador: o espaço acabou. Use prints menores."); return false; }
+}
 
+/* =====================================================================
+   MOTOR: saldo, lucro, quadros e prêmios a partir dos lançamentos
+   Lançamento: aporte (+), saque (−), saldo (corrige para o valor informado).
+   Resultado do copy: % aplicado a todos com saldo na data.
+   ===================================================================== */
+let CACHE = new Map();
+function limpaCache() { CACHE = new Map(); }
+const ORDEM = { aporte: 0, saque: 1, resultado: 2, saldo: 3 };
+function eventos(id) {
+  const k = "ev:" + id; if (CACHE.has(k)) return CACHE.get(k);
+  const ls = DB.lanc.filter(l => l.aluno === id);
+  const ini = ls.reduce((m, l) => l.data < m ? l.data : m, "9999");
+  const ev = ls.concat(DB.copy.filter(c => c.data >= ini).map(c => ({ tipo: "resultado", data: c.data, pct: c.pct })))
+    .sort((x, y) => x.data < y.data ? -1 : x.data > y.data ? 1 : ORDEM[x.tipo] - ORDEM[y.tipo]);
+  CACHE.set(k, ev); return ev;
+}
+function estado(id, ate = "9999-12-31") {
+  const k = id + "|" + ate; if (CACHE.has(k)) return CACHE.get(k);
+  let saldo = 0, aportado = 0, pico = 0; const conq = {}, prem = {};
+  for (const e of eventos(id)) {
+    if (e.data > ate) break;
+    if (e.tipo === "aporte") { saldo += e.valor; aportado += e.valor; }
+    else if (e.tipo === "saque") { saldo -= e.valor; aportado -= e.valor; }
+    else if (e.tipo === "saldo") saldo = e.valor;
+    else if (e.tipo === "resultado" && saldo > 0) saldo *= 1 + e.pct / 100;
+    pico = Math.max(pico, saldo);
+    for (const t of CONFIG.placas) if (t.min > 0 && pico >= t.min && !conq[t.id]) conq[t.id] = e.data;
+    for (const p of CONFIG.premios) if (saldo - aportado >= p.meta && !prem[p.meta]) prem[p.meta] = e.data;
+  }
+  const r = { saldo, aportado, lucro: saldo - aportado, pico, conq, prem };
+  CACHE.set(k, r); return r;
+}
+// aporte líquido no período (o saldo inicial do cadastro não entra)
+const aporteEntre = (id, de, ate, comInicial = false) => sum(DB.lanc.filter(l => l.aluno === id && l.data >= de && l.data <= ate && (comInicial || !l.inicial) && (l.tipo === "aporte" || l.tipo === "saque")).map(l => l.tipo === "aporte" ? l.valor : -l.valor));
 const placaDe = v => { let p = CONFIG.placas[0]; for (const t of CONFIG.placas) if (v >= t.min) p = t; return p; };
 const proxPlaca = v => CONFIG.placas.find(t => t.min > v) || null;
 const proxPremio = v => CONFIG.premios.find(p => p.meta > v) || null;
+const aluno = id => DB.alunos.find(a => a.id === id);
+const iniciais = a => a.nome.split(" ").filter(Boolean).map(p => p[0]).slice(0, 2).join("").toUpperCase();
+const apelido = a => { const p = a.nome.trim().split(/\s+/); return p.length > 1 ? `${p[0]} ${p[p.length - 1][0]}.` : p[0]; };
+const fimTemporada = () => minIso(C.fim, HOJE);
+const ultimoCopy = () => DB.copy.slice().sort((x, y) => y.data.localeCompare(x.data))[0];
 
-const C = CONFIG.campeonato;
-const PERIODOS = {
-  mes:       { nome: CONFIG.mesesLongos[LAST], idx: [LAST], prev: [LAST - 1] },
-  temporada: { nome: C.temporada, idx: C.meses, prev: C.meses.slice(0, -1) },
-  geral:     { nome: "Desde o início", idx: range(0, LAST), prev: range(0, LAST - 1) }
-};
-const METRICAS = {
-  aportes: { nome: "Aportes",        col: "Aportado", val: (a, i) => aporteP(a, i), ok: (a, i) => aporteP(a, i) > 0, periodo: true },
-  saldo:   { nome: "Saldo na conta", col: "Saldo",    val: (a, i) => saldoAt(a, i), ok: (a, i) => saldoAt(a, i) > 0, periodo: false },
-  lucro:   { nome: "Lucro",          col: "Lucro",    val: (a, i) => lucroP(a, i),  ok: (a, i) => lucroP(a, i) !== 0, periodo: true }
-};
-function ranking(metrica, idx) {
-  const M = METRICAS[metrica];
-  return ALUNOS.filter(a => M.ok(a, idx)).map(a => ({ a, v: M.val(a, idx) })).sort((x, y) => y.v - x.v);
+function periodos() {
+  const ini = HOJE.slice(0, 8) + "01";
+  return {
+    mes: { nome: MESES_L[Number(HOJE.slice(5, 7)) - 1], de: ini, ate: HOJE },
+    temporada: { nome: C.temporada, de: C.inicio, ate: fimTemporada() },
+    geral: { nome: "Desde o início", de: "0000-01-01", ate: HOJE }
+  };
 }
-const copa = () => ALUNOS.map(a => ({ a, v: aporteP(a, C.meses) })).filter(x => x.v >= C.aporteMinimo).sort((x, y) => y.v - x.v);
-function posicao(metrica, idx, id) { const r = ranking(metrica, idx); const i = r.findIndex(x => x.a.id === id); return i < 0 ? null : i + 1; }
-
-function clasRanking(idx) {
+const METRICAS = {
+  aportes: { nome: "Aportes",        col: "Aportado", periodo: true,  val: (id, p) => aporteEntre(id, p.de, p.ate), ok: v => v > 0 },
+  saldo:   { nome: "Saldo na conta", col: "Saldo",    periodo: false, val: (id, p) => estado(id, p.ate).saldo, ok: v => v > 0 },
+  lucro:   { nome: "Lucro",          col: "Lucro",    periodo: true,  val: (id, p) => estado(id, p.ate).lucro - estado(id, addDias(p.de, -1)).lucro, ok: v => Math.abs(v) >= 1 }
+};
+function ranking(metrica, p) {
+  const k = "rk:" + metrica + p.de + p.ate; if (CACHE.has(k)) return CACHE.get(k);
+  const M = METRICAS[metrica];
+  const r = DB.alunos.map(a => ({ a, v: M.val(a.id, p) })).filter(x => M.ok(x.v)).sort((x, y) => y.v - x.v);
+  CACHE.set(k, r); return r;
+}
+function copa(ate = fimTemporada()) {
+  return DB.alunos.map(a => ({ a, v: aporteEntre(a.id, C.inicio, ate) })).filter(x => x.v >= C.aporteMinimo).sort((x, y) => y.v - x.v);
+}
+function clasRanking(p) {
   return Object.entries(CONFIG.clas).map(([id, c]) => {
-    const mem = ALUNOS.filter(a => a.cla === id);
-    const total = sum(mem.map(a => aporteP(a, idx)));
-    const ativos = mem.filter(a => aporteP(a, idx) > 0).length;
-    const mvp = mem.slice().sort((x, y) => aporteP(y, idx) - aporteP(x, idx))[0];
-    return { id, ...c, membros: mem.length, ativos, total, mvp };
+    const mem = DB.alunos.filter(a => a.cla === id);
+    const vs = mem.map(a => ({ a, v: aporteEntre(a.id, p.de, p.ate) }));
+    const mvp = vs.slice().sort((x, y) => y.v - x.v)[0];
+    return { id, ...c, membros: mem.length, ativos: vs.filter(x => x.v > 0).length, total: sum(vs.map(x => x.v)), mvp: mvp && mvp.v > 0 ? mvp.a : null };
   }).sort((x, y) => y.total - x.total);
 }
-
-function eventos() {
-  const ev = [];
-  ALUNOS.forEach(a => {
-    for (let m = 0; m < N; m++) {
-      const antes = m ? a.cap[m - 1] : 0, lAntes = m ? sum(a.lucro.slice(0, m)) : 0, lDepois = sum(a.lucro.slice(0, m + 1));
-      CONFIG.placas.forEach(t => { if (t.min > 0 && antes < t.min && a.cap[m] >= t.min) ev.push({ m, a, t, peso: t.min, txt: `conquistou o quadro <b>${t.nome}</b> · US$ ${usdK(t.min)}` }); });
-      CONFIG.premios.forEach(p => { if (lAntes < p.meta && lDepois >= p.meta) ev.push({ m, a, p, peso: p.meta / 10, txt: `ganhou <b>${esc(p.nome)}</b> ao passar ${usd(p.meta)} de lucro` }); });
-      if (a.aportes[m] >= 10000) ev.push({ m, a, ap: true, peso: a.aportes[m] / 5, txt: `aportou <b>${usd(a.aportes[m])}</b>` });
-    }
+function conquistas() {
+  const out = [];
+  DB.alunos.forEach(a => {
+    const e = estado(a.id);
+    Object.entries(e.conq).forEach(([pid, d]) => { const t = CONFIG.placas.find(x => x.id === pid); out.push({ data: d, a, t, peso: t.min, txt: `conquistou o quadro <b>${t.nome}</b> · US$ ${usdK(t.min)}` }); });
+    Object.entries(e.prem).forEach(([m, d]) => { const p = CONFIG.premios.find(x => x.meta == m); out.push({ data: d, a, p, peso: p.meta / 10, txt: `ganhou <b>${esc(p.nome)}</b> ao passar ${usd(p.meta)} de lucro` }); });
   });
-  return ev.sort((x, y) => y.m - x.m || y.peso - x.peso);
+  DB.lanc.filter(l => l.tipo === "aporte" && !l.inicial && l.valor >= 5000).forEach(l => { const a = aluno(l.aluno); if (a) out.push({ data: l.data, a, ap: true, peso: l.valor / 5, txt: `aportou <b>${usd(l.valor)}</b>` }); });
+  return out.sort((x, y) => y.data.localeCompare(x.data) || y.peso - x.peso);
 }
+const statusQuadro = (aid, pid) => (DB.quadros[aid + ":" + pid] || {}).status || "a_produzir";
+const STATUS_Q = { a_produzir: "A produzir", producao: "Em produção", enviado: "Enviado", entregue: "Entregue" };
 
 /* =====================================================================
    PEÇAS VISUAIS
    ===================================================================== */
-// Símbolo da Legatus Group redesenhado em vetor
 const LOGO = (fill = "currentColor", label = "") => `<svg viewBox="0 0 376 463" fill="${fill}" ${label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"'}><polygon points="0,246 55,202 55,463 0,463"/><polygon points="85,463 85,133 137,91 137,410 165,410 165,46 218,0 218,410 326,410 326,320 265,282 265,228 376,296 376,463"/></svg>`;
-
 function plaque(t, opts = {}) {
   if (!t.quadro) return `<div class="plaque empty">Primeiro quadro<br>com US$ ${usdK(CONFIG.placas[1].min)}</div>`;
-  const nome = opts.nome ? `<div class="name">${esc(opts.nome)}</div>` : "";
   return `<div class="plaque ${t.filete ? "filete" : ""} ${opts.locked ? "locked" : ""}" style="--pc:${t.cor}" role="img" aria-label="Quadro ${t.nome}, US$ ${usdK(t.min)}">
-    <div class="panel">
-      <div class="inner">
-        ${LOGO("#d6ab4c")}
-        <div class="org">${CONFIG.marca.nome} ${CONFIG.marca.sub}</div>
-        <div class="amt"><small>US$</small>${usdK(t.min)}</div>
-        <div class="lv">${t.nome.toUpperCase()}</div>
-        <div class="tag">${esc(t.frase)}</div>
-      </div>
-      ${nome}
-    </div>
-  </div>`;
+    <div class="panel"><div class="inner">${LOGO("#d6ab4c")}<div class="org">${CONFIG.marca.nome} ${CONFIG.marca.sub}</div>
+      <div class="amt"><small>US$</small>${usdK(t.min)}</div><div class="lv">${t.nome.toUpperCase()}</div><div class="tag">${esc(t.frase)}</div></div>
+      ${opts.nome ? `<div class="name">${esc(opts.nome)}</div>` : ""}</div></div>`;
 }
-const placaPill = a => { const t = placaDe(a.saldo); return `<span class="pill" style="--pc:${t.cor}"><i></i>${t.nome}</span>`; };
-const avatar = a => `<span class="avatar" style="background:${CONFIG.clas[a.cla].cor}" aria-hidden="true">${a.iniciais}</span>`;
-const who = (a, sub) => `<div class="who">${avatar(a)}<div style="min-width:0"><span style="font-weight:600">${esc(a.nome)}</span><small>${sub ?? esc(a.cidade) + " · " + CONFIG.clas[a.cla].nome}</small></div></div>`;
+const placaPill = a => { const t = placaDe(estado(a.id).pico); return `<span class="pill" style="--pc:${t.cor}"><i></i>${t.nome}</span>`; };
+const avatar = a => `<span class="avatar" style="background:${(CONFIG.clas[a.cla] || { cor: "#666" }).cor}" aria-hidden="true">${esc(iniciais(a))}</span>`;
+const nomeCla = a => (CONFIG.clas[a.cla] || { nome: "Sem clã" }).nome;
+const who = (a, sub) => `<div class="who">${avatar(a)}<div style="min-width:0"><span style="font-weight:600">${esc(a.nome)}</span><small>${sub ?? esc(a.cidade || "—") + " · " + nomeCla(a)}</small></div></div>`;
 const mv = d => d == null ? `<span class="mv muted">novo</span>` : d > 0 ? `<span class="mv up">▲${d}</span>` : d < 0 ? `<span class="mv down">▼${-d}</span>` : `<span class="mv muted">—</span>`;
+const statusPill = s => `<span class="status ${s}">${{ pendente: "Em análise", aprovado: "Aprovado", recusado: "Recusado" }[s] || STATUS_Q[s] || s}</span>`;
 
 function nice(v) { if (v <= 0) return 1; const p = 10 ** Math.floor(Math.log10(v)); const n = v / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; }
-function ticks(max, n = 4) { const step = nice(max / n); const top = Math.ceil(max / step) * step; return { top, step, list: range(0, Math.round(top / step)).map(i => i * step) }; }
+function ticks(max, n = 4) { const step = nice(max / n); const top = Math.ceil(max / step) * step; const list = []; for (let v = 0; v <= top + 1e-9; v += step) list.push(v); return { top, step, list }; }
 
-function lineChart(a) {
-  const W = 600, H = 230, L = 52, R = 16, T = 18, B = 28, iw = W - L - R, ih = H - T - B;
-  const ap = []; let s = 0; a.aportes.forEach((v, i) => ap.push(s += v - a.saques[i]));
-  const tk = ticks(Math.max(1, ...a.cap, ...ap)), max = tk.top;
-  const x = i => L + (N === 1 ? iw / 2 : i * iw / (N - 1)), y = v => T + ih - v / max * ih;
+function lineChart(id) {
+  const meses = ultimosMeses(6), W = 600, H = 230, L = 52, R = 16, T = 18, B = 28, iw = W - L - R, ih = H - T - B, n = meses.length;
+  const sal = meses.map(m => estado(id, minIso(m.fim, HOJE)).saldo), ap = meses.map(m => Math.max(0, estado(id, minIso(m.fim, HOJE)).aportado));
+  const nx = proxPlaca(estado(id).pico);
+  const tk = ticks(Math.max(1, ...sal, ...ap)), max = tk.top;
+  const x = i => L + i * iw / (n - 1), y = v => T + ih - v / max * ih;
   const grid = tk.list.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--chart-grid)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${usdK(v)}</text>`).join("");
-  const xl = CONFIG.meses.map((m, i) => `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${m}</text>`).join("");
-  const nxt = proxPlaca(a.saldo);
-  const meta = nxt && nxt.min <= max ? `<line x1="${L}" x2="${W - R}" y1="${y(nxt.min)}" y2="${y(nxt.min)}" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="2 4"/><text x="${L + 6}" y="${y(nxt.min) - 6}" style="fill:var(--gold);font-weight:600">${nxt.nome} · US$ ${usdK(nxt.min)}</text>` : "";
-  const pts = a.cap.map((v, i) => `${x(i)},${y(v)}`).join(" ");
-  const apPts = ap.map((v, i) => `${x(i)},${y(v)}`).join(" ");
-  const area = `M${x(0)},${y(0)} L${pts.replace(/ /g, " L")} L${x(LAST)},${y(0)} Z`;
-  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Evolução do saldo">
-    ${grid}${xl}${meta}
-    <path d="${area}" fill="var(--chart-fill)"/>
+  const xl = meses.map((m, i) => `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${m.label}</text>`).join("");
+  const meta = nx && nx.min <= max ? `<line x1="${L}" x2="${W - R}" y1="${y(nx.min)}" y2="${y(nx.min)}" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="2 4"/><text x="${L + 6}" y="${y(nx.min) - 6}" style="fill:var(--gold);font-weight:600">${nx.nome} · US$ ${usdK(nx.min)}</text>` : "";
+  const pts = sal.map((v, i) => `${x(i)},${y(v)}`).join(" "), apPts = ap.map((v, i) => `${x(i)},${y(v)}`).join(" ");
+  return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Evolução do saldo">${grid}${xl}${meta}
+    <path d="M${x(0)},${y(0)} L${pts.replace(/ /g, " L")} L${x(n - 1)},${y(0)} Z" fill="var(--chart-fill)"/>
     <polyline points="${apPts}" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="4 4"/>
     <polyline points="${pts}" fill="none" stroke="var(--chart-line)" stroke-width="2.5" stroke-linejoin="round"/>
-    <circle cx="${x(LAST)}" cy="${y(a.cap[LAST])}" r="5" fill="var(--chart-line)" stroke="var(--surface)" stroke-width="2"/>
-  </svg>`;
+    <circle cx="${x(n - 1)}" cy="${y(sal[n - 1])}" r="5" fill="var(--chart-line)" stroke="var(--surface)" stroke-width="2"/></svg>`;
 }
-function barChart(a) {
-  const W = 600, H = 230, L = 52, R = 16, T = 22, B = 28, iw = W - L - R, ih = H - T - B;
-  const vals = a.aportes.map((v, i) => v - a.saques[i]);
+function barChart(id) {
+  const meses = ultimosMeses(6), W = 600, H = 230, L = 52, R = 16, T = 22, B = 28, iw = W - L - R, ih = H - T - B, n = meses.length;
+  const vals = meses.map(m => aporteEntre(id, m.ini, m.fim, true));
   const tk = ticks(Math.max(1, ...vals)), hi = tk.top, mn = Math.min(0, ...vals), lo = mn < 0 ? -Math.ceil(-mn / tk.step) * tk.step : 0;
-  const y = v => T + (hi - v) / (hi - lo) * ih, bw = iw / N * .5;
+  const y = v => T + (hi - v) / (hi - lo) * ih, bw = iw / n * .5;
   const tl = []; for (let v = lo; v <= hi + 1e-9; v += tk.step) tl.push(v);
   const grid = tl.map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--chart-grid)"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${usdK(v)}</text>`).join("");
   const bars = vals.map((v, i) => {
-    const cx = L + iw / N * (i + .5), top = y(Math.max(v, 0)), hgt = Math.max(Math.abs(y(v) - y(0)), v ? 2 : 0);
-    const inCopa = C.meses.includes(i);
+    const cx = L + iw / n * (i + .5), top = y(Math.max(v, 0)), hgt = Math.max(Math.abs(y(v) - y(0)), v ? 2 : 0);
+    const naCopa = meses[i].fim >= C.inicio && meses[i].ini <= C.fim;
     const lab = v ? `<text x="${cx}" y="${v >= 0 ? top - 6 : top + hgt + 13}" text-anchor="middle" style="fill:var(--ink)">${usdK(v)}</text>` : "";
-    return `<rect x="${cx - bw / 2}" y="${top}" width="${bw}" height="${hgt}" rx="4" fill="${v < 0 ? "var(--down)" : inCopa ? "var(--gold)" : "var(--chart-line)"}" ${inCopa ? "" : 'opacity=".5"'}/>${lab}<text x="${cx}" y="${H - 8}" text-anchor="middle">${CONFIG.meses[i]}</text>`;
+    return `<rect x="${cx - bw / 2}" y="${top}" width="${bw}" height="${hgt}" rx="4" fill="${v < 0 ? "var(--down)" : naCopa ? "var(--gold)" : "var(--chart-line)"}" ${naCopa ? "" : 'opacity=".5"'}/>${lab}<text x="${cx}" y="${H - 8}" text-anchor="middle">${meses[i].label}</text>`;
   }).join("");
   return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Aportes por mês">${grid}${bars}</svg>`;
 }
 
 /* =====================================================================
-   TELAS
+   TELAS DO ALUNO
    ===================================================================== */
-const ICON = {
-  painel: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
-  campeonato: '<path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/>',
-  ranking: '<path d="M8 21V10M16 21V4M12 21v-7M4 21h16"/>',
-  quadros: '<rect x="4" y="3" width="16" height="18" rx="1"/><rect x="8" y="7" width="8" height="8"/>',
-  hall: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>'
-};
-const VIEWS = { painel: "Meu painel", campeonato: "Copa dos Aportes", ranking: "Rankings", quadros: "Quadros e prêmios", hall: "Hall da fama" };
-const state = { view: "painel", me: CONFIG.alunoLogado, metrica: "aportes", periodo: "temporada" };
-try { const s = JSON.parse(localStorage.getItem("legatus-state") || "{}"); if (METRICAS[s.metrica] || s.metrica === "clas") Object.assign(state, s); } catch (e) {}
-const save = () => { try { localStorage.setItem("legatus-state", JSON.stringify({ metrica: state.metrica, periodo: state.periodo, me: state.me })); } catch (e) {} };
-const me = () => ALUNOS.find(a => a.id === state.me) || ALUNOS[0];
-
 function viewPainel() {
-  const a = me(), t = placaDe(a.saldo), nx = proxPlaca(a.saldo), pr = proxPremio(a.lucroTotal);
-  const ganhos = CONFIG.premios.filter(p => a.lucroTotal >= p.meta);
-  const prog = nx ? (a.saldo - t.min) / (nx.min - t.min) : 1;
+  const a = aluno(state.sess.id), e = estado(a.id), t = placaDe(e.pico), nx = proxPlaca(e.pico), pr = proxPremio(e.lucro);
+  const prog = nx ? Math.max(0, (e.saldo - t.min) / (nx.min - t.min)) : 1;
   const prevP = pr ? (CONFIG.premios[CONFIG.premios.indexOf(pr) - 1]?.meta || 0) : 0;
-  const progPr = pr ? Math.max(0, (a.lucroTotal - prevP) / (pr.meta - prevP)) : 1;
-  const rk = copa(), i = rk.findIndex(x => x.a.id === a.id), posCopa = i + 1;
-  const meuAp = aporteP(a, C.meses);
+  const progPr = pr ? Math.max(0, (e.lucro - prevP) / (pr.meta - prevP)) : 1;
+  const rk = copa(), i = rk.findIndex(x => x.a.id === a.id), pos = i + 1, meuAp = aporteEntre(a.id, C.inicio, fimTemporada());
   const acima = i > 0 ? rk[i - 1] : null, abaixo = i >= 0 ? rk[i + 1] : null;
-  const posSaldo = posicao("saldo", PERIODOS.geral.idx, a.id);
-  const rc = rentCopy(LAST);
-  const primeiro = a.nome.split(" ")[0];
-  const data = new Date(CONFIG.atualizadoEm + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
-
+  const posSaldo = ranking("saldo", periodos().geral).findIndex(x => x.a.id === a.id) + 1;
+  const uc = ultimoCopy();
+  const pend = DB.envios.filter(x => x.aluno === a.id && x.status === "pendente");
+  const data = new Date(HOJE + "T12:00:00").toLocaleDateString("pt-BR", { weekday: "long", day: "2-digit", month: "long", year: "numeric" });
   let disputa;
-  if (i < 0) disputa = `<div style="font-size:.95rem">Você ainda não está na Copa. Aporte <b class="num">${usd(C.aporteMinimo - meuAp)}</b> até ${new Date(C.fim).toLocaleDateString("pt-BR")} para entrar na classificação.</div>`;
-  else if (!acima) disputa = `<div style="font-size:.95rem">Você lidera a Copa dos Aportes.</div>${abaixo ? `<div class="note">${esc(abaixo.a.apelido)} está a ${usd(rk[i].v - abaixo.v)} de você.</div>` : ""}`;
-  else disputa = `<div class="rival">
-        <div class="p me"><div class="eyebrow">${posCopa}º · você</div><div class="n">${esc(a.apelido)}</div><div class="num">${usd(rk[i].v)}</div></div>
-        <div class="vs">vs</div>
-        <div class="p"><div class="eyebrow">${posCopa - 1}º</div><div class="n">${esc(acima.a.apelido)}</div><div class="num">${usd(acima.v)}</div></div>
-      </div>
-      <div style="font-size:.92rem">Um aporte de <b class="num">${usd(acima.v - rk[i].v + 1)}</b> coloca você na frente de ${esc(acima.a.apelido.split(" ")[0])}, em <b>${posCopa - 1}º</b>.</div>
-      ${abaixo ? `<div class="note">Logo atrás: ${esc(abaixo.a.apelido)}, a ${usd(rk[i].v - abaixo.v)} de você.</div>` : ""}`;
-
+  if (i < 0) disputa = `<div>Você ainda não está na Copa. Aporte <b class="num">${usd(C.aporteMinimo - meuAp)}</b> até ${fmtData(C.fim)} para entrar na classificação.</div>`;
+  else if (!acima) disputa = `<div>Você lidera a Copa dos Aportes.</div>${abaixo ? `<div class="note">${esc(apelido(abaixo.a))} está a ${usd(rk[i].v - abaixo.v)} de você.</div>` : ""}`;
+  else disputa = `<div class="rival"><div class="p me"><div class="eyebrow">${pos}º · você</div><div class="n">${esc(apelido(a))}</div><div class="num">${usd(rk[i].v)}</div></div><div class="vs">vs</div>
+      <div class="p"><div class="eyebrow">${pos - 1}º</div><div class="n">${esc(apelido(acima.a))}</div><div class="num">${usd(acima.v)}</div></div></div>
+      <div style="font-size:.92rem">Um aporte de <b class="num">${usd(acima.v - rk[i].v + 1)}</b> coloca você na frente de ${esc(acima.a.nome.split(" ")[0])}, em <b>${pos - 1}º</b>.</div>
+      ${abaixo ? `<div class="note">Logo atrás: ${esc(apelido(abaixo.a))}, a ${usd(rk[i].v - abaixo.v)} de você.</div>` : ""}`;
   return `
+  ${pend.length ? `<div class="banner"><div><b>${pend.length === 1 ? "1 aporte em análise" : pend.length + " aportes em análise"}</b> · ${usd(sum(pend.map(x => x.valor)))}. Assim que for aprovado, entra no seu saldo e na Copa.</div><a class="btn sm" href="#envios">Ver meus envios</a></div>` : ""}
   <div class="hero">
     <div>
       <div class="eyebrow" style="color:inherit;opacity:.65">${data}</div>
-      <h1>Bem-vindo, ${esc(primeiro)}</h1>
-      <div class="sub">${esc(CONFIG.marca.comunidade)} · Clã ${CONFIG.clas[a.cla].nome} · ${esc(a.cidade)}</div>
+      <h1>Bem-vindo, ${esc(a.nome.split(" ")[0])}</h1>
+      <div class="sub">${esc(CONFIG.marca.comunidade)} · Clã ${nomeCla(a)}${a.cidade ? " · " + esc(a.cidade) : ""}</div>
       <div class="hero-tags">
-        <span class="t">${C.nome} <b>${posCopa ? posCopa + "º" : "fora"}</b></span>
-        <span class="t">Saldo <b>${posSaldo}º</b> da Legião</span>
-        ${a.sequencia >= 2 ? `<span class="t"><b>${a.sequencia} meses</b> seguidos aportando</span>` : ""}
+        <span class="t">${C.nome} <b>${pos ? pos + "º" : "fora"}</b></span>
+        ${posSaldo ? `<span class="t">Saldo <b>${posSaldo}º</b> da Legião</span>` : ""}
       </div>
+      <div style="margin-top:18px"><a class="btn primary" href="#enviar">Informar novo aporte</a></div>
     </div>
     <div class="trail">
       <div>${plaque(t, { nome: t.quadro ? a.nome : "" })}<div class="lbl">${t.quadro ? "Seu quadro" : t.nome}</div></div>
       <div>
         <div class="eyebrow" style="color:inherit;opacity:.65;margin-bottom:8px">${nx ? "Rumo a " + nx.nome : "Nível máximo"}</div>
         <div class="bar"><i style="width:${Math.min(100, prog * 100).toFixed(1)}%"></i></div>
-        <div class="trail-info"><span>Saldo <b>${usd(a.saldo)}</b></span>${nx ? `<span>faltam <b>${usd(nx.min - a.saldo)}</b></span>` : ""}</div>
+        <div class="trail-info"><span>Saldo <b>${usd(e.saldo)}</b></span>${nx ? `<span>faltam <b>${usd(nx.min - e.saldo)}</b></span>` : ""}</div>
       </div>
       <div>${nx ? plaque(nx, { locked: true }) + `<div class="lbl">Próximo</div>` : ""}</div>
     </div>
   </div>
-
   <div class="grid g4">
-    <div class="card stat"><div class="eyebrow">Saldo na conta</div><div class="v">${usd(a.saldo)}</div><div class="d muted">${t.quadro ? "quadro " + t.nome : "sem quadro ainda"}</div></div>
-    <div class="card stat"><div class="eyebrow">Aportado na Copa</div><div class="v" style="color:var(--gold)">${usd(meuAp)}</div><div class="d muted">${posCopa ? posCopa + "º de " + rk.length : "mínimo " + usd(C.aporteMinimo)}</div></div>
-    <div class="card stat"><div class="eyebrow">Lucro acumulado</div><div class="v ${a.lucroTotal >= 0 ? "up" : "down"}">${usd(a.lucroTotal)}</div><div class="d muted">total aportado ${usd(a.aportado)}</div></div>
-    <div class="card stat"><div class="eyebrow">Copy em ${CONFIG.meses[LAST]}</div><div class="v ${rc >= 0 ? "up" : "down"}">${pct(rc)}</div><div class="d muted">${usd(a.lucro[LAST])} na sua conta</div></div>
+    <div class="card stat"><div class="eyebrow">Saldo na conta</div><div class="v">${usd(e.saldo)}</div><div class="d muted">${t.quadro ? "quadro " + t.nome : "sem quadro ainda"}</div></div>
+    <div class="card stat"><div class="eyebrow">Aportado na Copa</div><div class="v" style="color:var(--gold)">${usd(meuAp)}</div><div class="d muted">${pos ? pos + "º de " + rk.length : "mínimo " + usd(C.aporteMinimo)}</div></div>
+    <div class="card stat"><div class="eyebrow">Lucro acumulado</div><div class="v ${e.lucro >= 0 ? "up" : "down"}">${usd(e.lucro)}</div><div class="d muted">total aportado ${usd(e.aportado)}</div></div>
+    <div class="card stat"><div class="eyebrow">Último resultado do copy</div><div class="v ${uc && uc.pct < 0 ? "down" : "up"}">${uc ? pct(uc.pct) : "—"}</div><div class="d muted">${uc ? "em " + fmtData(uc.data) : "ainda não lançado"}</div></div>
   </div>
-
   <div class="grid g3">
-    <div class="card">
-      <div class="card-head"><h3>Sua disputa na Copa</h3><span class="note">aporte na temporada</span></div>
-      ${disputa}
-      <a href="#campeonato" class="tab" style="text-align:center">Ver classificação</a>
-    </div>
-    <div class="card span2">
-      <div class="card-head"><h3>Evolução do saldo</h3><div class="legend"><span><i style="background:var(--chart-line)"></i>Saldo</span><span><i style="background:var(--muted)"></i>Total aportado</span>${nx ? `<span><i style="background:var(--gold)"></i>Próximo quadro</span>` : ""}</div></div>
-      ${lineChart(a)}
-    </div>
+    <div class="card"><div class="card-head"><h3>Sua disputa na Copa</h3><span class="note">aporte na temporada</span></div>${disputa}<a href="#copa" class="tab" style="text-align:center">Ver classificação</a></div>
+    <div class="card span2"><div class="card-head"><h3>Evolução do saldo</h3><div class="legend"><span><i style="background:var(--chart-line)"></i>Saldo</span><span><i style="background:var(--muted)"></i>Total aportado</span>${nx ? `<span><i style="background:var(--gold)"></i>Próximo quadro</span>` : ""}</div></div>${lineChart(a.id)}</div>
   </div>
-
   <div class="grid g3">
-    <div class="card span2">
-      <div class="card-head"><h3>Seus aportes por mês</h3><div class="legend"><span><i style="background:var(--gold)"></i>Conta para a Copa</span><span><i style="background:var(--chart-line);opacity:.5"></i>Antes da temporada</span></div></div>
-      ${barChart(a)}
-    </div>
+    <div class="card span2"><div class="card-head"><h3>Seus aportes por mês</h3><div class="legend"><span><i style="background:var(--gold)"></i>Conta para a Copa</span><span><i style="background:var(--chart-line);opacity:.5"></i>Fora da temporada</span></div></div>${barChart(a.id)}</div>
     <div class="card">
       <div class="card-head"><h3>Próximo prêmio</h3><span class="badge gold">por lucro</span></div>
-      ${pr ? `
-        <div><div style="font-weight:700;font-size:1.1rem">${esc(pr.nome)}</div><div class="muted" style="font-size:.88rem">${esc(pr.detalhe)}</div></div>
+      ${pr ? `<div><div style="font-weight:700;font-size:1.1rem">${esc(pr.nome)}</div><div class="muted" style="font-size:.88rem">${esc(pr.detalhe)}</div></div>
         <div class="bar light up"><i style="width:${(progPr * 100).toFixed(1)}%"></i></div>
-        <div style="display:flex;justify-content:space-between;font-size:.85rem;gap:8px;flex-wrap:wrap"><span class="num">${usd(a.lucroTotal)} / ${usd(pr.meta)}</span><span class="muted">faltam <b class="num" style="color:var(--ink)">${usd(pr.meta - a.lucroTotal)}</b></span></div>`
-      : `<div>Você conquistou todos os prêmios.</div>`}
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;gap:8px;flex-wrap:wrap"><span class="num">${usd(e.lucro)} / ${usd(pr.meta)}</span><span class="muted">faltam <b class="num" style="color:var(--ink)">${usd(pr.meta - e.lucro)}</b></span></div>` : `<div>Você conquistou todos os prêmios.</div>`}
       <div style="border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:6px">
-        ${CONFIG.premios.slice(0, 4).map(p => `<div style="display:flex;justify-content:space-between;gap:8px;font-size:.88rem"><span>${esc(p.nome)}</span>${a.lucroTotal >= p.meta ? '<span class="badge ok">ganho</span>' : `<span class="num muted">${usd(p.meta)}</span>`}</div>`).join("")}
+        ${CONFIG.premios.slice(0, 4).map(p => `<div style="display:flex;justify-content:space-between;gap:8px;font-size:.88rem"><span>${esc(p.nome)}</span>${e.prem[p.meta] ? '<span class="badge ok">ganho</span>' : `<span class="num muted">${usd(p.meta)}</span>`}</div>`).join("")}
       </div>
-      <div class="note">${ganhos.length} de ${CONFIG.premios.length} prêmios conquistados</div>
     </div>
   </div>`;
 }
 
-function viewCampeonato() {
-  const rk = copa(), meId = state.me;
+function viewEnviar() {
+  const a = aluno(state.sess.id);
+  return `
+  <div class="grid g3">
+    <div class="card span2">
+      <div><h2>Informar aporte</h2><div class="muted" style="font-size:.9rem">Fez um depósito na sua conta ${esc(CONFIG.marca.corretora)}? Envie o print aqui. Depois da aprovação, o valor entra no seu saldo, nos rankings e na Copa.</div></div>
+      <form id="form-envio" class="form-grid" novalidate>
+        <div class="field"><label for="env-valor">Valor depositado (US$)</label><input id="env-valor" inputmode="decimal" placeholder="Ex.: 2.500" required></div>
+        <div class="field"><label for="env-data">Data do depósito</label><input id="env-data" type="date" value="${HOJE}" max="${HOJE}" required></div>
+        <div class="field"><label for="env-saldo">Saldo da conta depois do depósito (US$)</label><input id="env-saldo" inputmode="decimal" placeholder="Opcional"><small>Se aparecer no print, ajuda a manter seu saldo certinho.</small></div>
+        <div class="field"><label for="env-obs">Observação</label><input id="env-obs" placeholder="Opcional"></div>
+        <div class="field full"><label for="env-file">Print do comprovante</label>
+          <label class="drop" id="drop" for="env-file"><span id="drop-txt"><b>Toque para escolher o print</b><br><span class="note">ou arraste a imagem aqui · JPG ou PNG</span></span><img id="drop-img" hidden alt="Prévia do comprovante"></label>
+          <input id="env-file" type="file" accept="image/*" hidden></div>
+        <div class="full row-actions"><button class="btn primary" type="submit" id="env-btn">Enviar para aprovação</button><span class="note" id="env-msg"></span></div>
+      </form>
+    </div>
+    <div class="card">
+      <h3>O que vale como comprovante</h3>
+      <ul class="rules">
+        <li>Print da ${esc(CONFIG.marca.corretora)} mostrando o depósito creditado na sua conta (${esc(a.conta || "nº da conta")}).</li>
+        <li>O valor e a data precisam estar visíveis.</li>
+        <li>Um envio por depósito. Se fez dois depósitos, envie dois prints.</li>
+        <li>A administração confere e aprova, normalmente em até 1 dia útil.</li>
+      </ul>
+    </div>
+  </div>`;
+}
+
+function viewEnvios() {
+  const lista = DB.envios.filter(x => x.aluno === state.sess.id).sort((x, y) => y.enviadoEm.localeCompare(x.enviadoEm));
+  return `<div class="card"><div class="card-head"><h2>Meus envios</h2><a class="btn primary sm" href="#enviar">Informar novo aporte</a></div>
+    ${lista.length ? `<div class="table-wrap"><table><thead><tr><th>Enviado em</th><th>Depósito</th><th class="r">Valor</th><th>Situação</th><th>Print</th></tr></thead><tbody>
+    ${lista.map(x => `<tr><td>${fmtData(x.enviadoEm)}</td><td>${fmtData(x.data)}</td><td class="r num">${usd(x.valor)}</td><td>${statusPill(x.status)}${x.motivo ? `<div class="note" style="white-space:normal;max-width:280px">${esc(x.motivo)}</div>` : ""}</td><td><button class="btn sm" data-act="zoom" data-id="${x.id}">Ver print</button></td></tr>`).join("")}
+    </tbody></table></div>` : `<div class="empty-state">Você ainda não enviou nenhum comprovante.</div>`}</div>`;
+}
+
+/* =====================================================================
+   TELAS COMPARTILHADAS (aluno e admin)
+   ===================================================================== */
+function viewCopa() {
+  const rk = copa(), meId = state.sess.role === "aluno" ? state.sess.id : null;
   const duelos = []; for (let i = 0; i + 1 < Math.min(rk.length, 12); i += 2) duelos.push([rk[i], rk[i + 1]]);
-  const cr = clasRanking(C.meses);
-  const posMe = rk.findIndex(x => x.a.id === meId) + 1;
-  const total = sum(rk.map(x => x.v));
+  const cr = clasRanking({ de: C.inicio, ate: fimTemporada() });
+  const posMe = meId ? rk.findIndex(x => x.a.id === meId) + 1 : 0;
   return `
   <div class="champ">
     <div style="display:flex;flex-direction:column;gap:14px">
-      <div class="eyebrow" style="color:inherit;opacity:.65">${C.temporada} · ${C.periodoTexto}</div>
+      <div class="eyebrow" style="color:inherit;opacity:.65">${C.temporada} · ${fmtData(C.inicio)} a ${fmtData(C.fim)}</div>
       <h1>${C.nome}</h1>
-      <div style="opacity:.85">Vence quem aportar mais. A Legião já aportou <b style="color:var(--gold-hi)">${usd(total)}</b> nesta temporada.${posMe ? ` Você está em <b style="color:var(--gold-hi)">${posMe}º</b> de ${rk.length}.` : ""}</div>
+      <div style="opacity:.85">Vence quem aportar mais. A Legião já aportou <b style="color:var(--gold-hi)">${usd(sum(rk.map(x => x.v)))}</b> nesta temporada.${posMe ? ` Você está em <b style="color:var(--gold-hi)">${posMe}º</b> de ${rk.length}.` : ""}</div>
       <div class="countdown" id="countdown" aria-label="Tempo restante"></div>
     </div>
     <div class="payout">${C.premiacao.map(([p, v]) => `<div><span>${p}</span><b>${esc(v)}</b></div>`).join("")}</div>
   </div>
   <div class="grid g3">
-    <div class="card span2">
-      <div class="card-head"><h3>Classificação</h3><span class="note">${rk.length} na disputa · mínimo ${usd(C.aporteMinimo)}</span></div>
-      <div class="table-wrap"><table><thead><tr><th>Pos.</th><th>Aluno</th><th>Quadro</th><th class="r">Aportado</th></tr></thead><tbody>
-      ${rk.slice(0, 15).map((x, i) => `<tr class="${x.a.id === meId ? "me" : ""}"><td><span class="rank" style="${i < 3 ? "color:var(--gold)" : ""}">${i + 1}</span></td><td>${who(x.a)}</td><td>${placaPill(x.a)}</td><td class="r num">${usd(x.v)}</td></tr>`).join("")}
-      ${posMe > 15 ? `<tr class="me"><td><span class="rank">${posMe}</span></td><td>${who(me())}</td><td>${placaPill(me())}</td><td class="r num">${usd(rk[posMe - 1].v)}</td></tr>` : ""}
-      </tbody></table></div>
-    </div>
-    <div class="card">
-      <h3>Regras</h3>
-      <ul class="rules">${C.regras.map(r => `<li>${esc(r)}</li>`).join("")}</ul>
-    </div>
+    <div class="card span2"><div class="card-head"><h3>Classificação</h3><span class="note">${rk.length} na disputa · mínimo ${usd(C.aporteMinimo)}</span></div>
+      ${rk.length ? `<div class="table-wrap"><table><thead><tr><th>Pos.</th><th>Aluno</th><th>Quadro</th><th class="r">Aportado</th></tr></thead><tbody>
+      ${rk.slice(0, 20).map((x, i) => `<tr class="${x.a.id === meId ? "me" : ""}"><td><span class="rank" style="${i < 3 ? "color:var(--gold)" : ""}">${i + 1}</span></td><td>${who(x.a)}</td><td>${placaPill(x.a)}</td><td class="r num">${usd(x.v)}</td></tr>`).join("")}
+      ${posMe > 20 ? `<tr class="me"><td><span class="rank">${posMe}</span></td><td>${who(rk[posMe - 1].a)}</td><td>${placaPill(rk[posMe - 1].a)}</td><td class="r num">${usd(rk[posMe - 1].v)}</td></tr>` : ""}
+      </tbody></table></div>` : `<div class="empty-state">Ninguém aportou o mínimo nesta temporada ainda.</div>`}</div>
+    <div class="card"><h3>Regras</h3><ul class="rules">${C.regras.map(r => `<li>${esc(r)}</li>`).join("")}</ul></div>
   </div>
   <div class="grid g2">
-    <div class="card">
-      <div class="card-head"><h3>Duelos 1x1</h3><span class="note">aporte na temporada</span></div>
-      <div class="grid g2">${duelos.map(([p, q]) => {
-        const w = Math.max(8, Math.min(92, p.v / ((p.v + q.v) || 1) * 100));
-        return `<div class="duel"><div class="row"><span class="n">${esc(p.a.apelido)}</span><span class="num" style="color:var(--gold)">${usdK(p.v)}</span></div>
+    <div class="card"><div class="card-head"><h3>Duelos 1x1</h3><span class="note">aporte na temporada</span></div>
+      <div class="grid g2">${duelos.map(([p, q]) => { const w = Math.max(8, Math.min(92, p.v / ((p.v + q.v) || 1) * 100));
+        return `<div class="duel"><div class="row"><span class="n">${esc(apelido(p.a))}</span><span class="num" style="color:var(--gold)">${usdK(p.v)}</span></div>
           <div class="split"><i style="width:${w}%"></i><i style="width:${100 - w}%"></i></div>
-          <div class="row"><span class="n muted">${esc(q.a.apelido)}</span><span class="num muted">${usdK(q.v)}</span></div>
-          <div class="note">${p.v === q.v ? "Empatados" : `${esc(q.a.apelido.split(" ")[0])} precisa de ${usd(p.v - q.v + 1)} para virar`}</div></div>`;
-      }).join("")}</div>
-    </div>
-    <div class="card">
-      <div class="card-head"><h3>Guerra de Clãs</h3><span class="note">aporte somado do clã</span></div>
-      ${cr.map((c, i) => `<div class="clan"><div class="ico" style="background:${c.cor}">${i + 1}</div><div style="min-width:0"><div style="font-weight:700">${c.nome}</div><div class="note">${c.ativos} de ${c.membros} aportaram${c.mvp && aporteP(c.mvp, C.meses) > 0 ? " · destaque " + esc(c.mvp.apelido) : ""}</div></div><div class="num">${usd(c.total)}</div></div>`).join("")}
-    </div>
+          <div class="row"><span class="n muted">${esc(apelido(q.a))}</span><span class="num muted">${usdK(q.v)}</span></div>
+          <div class="note">${p.v === q.v ? "Empatados" : `${esc(q.a.nome.split(" ")[0])} precisa de ${usd(p.v - q.v + 1)} para virar`}</div></div>`; }).join("") || '<div class="note">Os duelos começam quando houver 2 participantes.</div>'}</div></div>
+    <div class="card"><div class="card-head"><h3>Guerra de Clãs</h3><span class="note">aporte somado do clã</span></div>
+      ${cr.map((c, i) => `<div class="clan"><div class="ico" style="background:${c.cor}">${i + 1}</div><div style="min-width:0"><div style="font-weight:700">${c.nome}</div><div class="note">${c.ativos} de ${c.membros} aportaram${c.mvp ? " · destaque " + esc(apelido(c.mvp)) : ""}</div></div><div class="num">${usd(c.total)}</div></div>`).join("")}</div>
   </div>`;
 }
 
 function viewRanking() {
-  const P = PERIODOS[state.periodo], M = METRICAS[state.metrica];
-  const tabs = Object.entries(METRICAS).map(([k, m]) => `<button class="tab" data-metrica="${k}" aria-pressed="${k === state.metrica}">${m.nome}</button>`).join("") +
-    `<button class="tab" data-metrica="clas" aria-pressed="${state.metrica === "clas"}">Clãs</button>`;
-  const usaPeriodo = state.metrica === "clas" || M.periodo;
-  const seg = `<div class="seg" role="group" aria-label="Período">${Object.entries(PERIODOS).map(([k, p]) => `<button data-periodo="${k}" aria-pressed="${k === state.periodo}">${k === "mes" ? p.nome : k === "temporada" ? "Temporada" : "Geral"}</button>`).join("")}</div>`;
-  const head = `<div class="controls"><div class="tabs">${tabs}</div>${usaPeriodo ? seg : '<span class="note">Saldo atual na conta copiada</span>'}</div>`;
-
+  const P = periodos()[state.periodo], M = METRICAS[state.metrica];
+  const meId = state.sess.role === "aluno" ? state.sess.id : null;
+  const tabs = Object.entries(METRICAS).map(([k, m]) => `<button class="tab" data-metrica="${k}" aria-pressed="${k === state.metrica}">${m.nome}</button>`).join("") + `<button class="tab" data-metrica="clas" aria-pressed="${state.metrica === "clas"}">Clãs</button>`;
+  const usaP = state.metrica === "clas" || M.periodo;
+  const seg = `<div class="seg" role="group" aria-label="Período">${Object.entries(periodos()).map(([k, p]) => `<button data-periodo="${k}" aria-pressed="${k === state.periodo}">${k === "mes" ? p.nome : k === "temporada" ? "Temporada" : "Geral"}</button>`).join("")}</div>`;
+  const head = `<div class="controls"><div class="tabs">${tabs}</div>${usaP ? seg : '<span class="note">Saldo atual na conta copiada</span>'}</div>`;
   if (state.metrica === "clas") {
-    const cr = clasRanking(P.idx);
-    return head + `<div class="card"><div class="card-head"><h3>Guerra de Clãs · ${P.nome}</h3><span class="note">Aporte somado dos membros</span></div>
-      ${cr.map((c, i) => `<div class="clan"><div class="ico" style="background:${c.cor}">${i + 1}</div>
-        <div style="min-width:0"><div style="font-weight:700">${c.nome}</div><div class="note">${c.ativos} de ${c.membros} aportaram${c.mvp && aporteP(c.mvp, P.idx) > 0 ? ` · destaque: ${esc(c.mvp.apelido)}` : ""}</div></div>
-        <div class="num">${usd(c.total)}</div></div>`).join("")}</div>`;
+    return head + `<div class="card"><div class="card-head"><h3>Guerra de Clãs · ${P.nome}</h3><span class="note">aporte somado dos membros</span></div>
+      ${clasRanking(P).map((c, i) => `<div class="clan"><div class="ico" style="background:${c.cor}">${i + 1}</div><div style="min-width:0"><div style="font-weight:700">${c.nome}</div><div class="note">${c.ativos} de ${c.membros} aportaram${c.mvp ? " · destaque: " + esc(apelido(c.mvp)) : ""}</div></div><div class="num">${usd(c.total)}</div></div>`).join("")}</div>`;
   }
-
-  const idx = M.periodo ? P.idx : PERIODOS.geral.idx;
-  const prevIdx = M.periodo ? P.prev : PERIODOS.geral.prev;
-  const rk = ranking(state.metrica, idx);
-  const prevRk = prevIdx.length ? ranking(state.metrica, prevIdx) : [];
-  const prevPos = id => { const j = prevRk.findIndex(x => x.a.id === id); return j < 0 ? null : j + 1; };
-  const top = rk.slice(0, 3);
+  const per = M.periodo ? P : periodos().geral;
+  const rk = ranking(state.metrica, per);
+  const sem = addDias(per.ate, -7), prevRk = sem >= per.de ? ranking(state.metrica, { de: per.de, ate: sem }) : null;
+  const prevPos = id => { if (!prevRk) return undefined; const j = prevRk.findIndex(x => x.a.id === id); return j < 0 ? null : j + 1; };
   const cls = v => state.metrica === "lucro" ? (v >= 0 ? "up" : "down") : "";
-  const pod = (x, n) => x ? `<div class="pod p${n}">${avatar(x.a)}<div class="pos">${n}º</div><div class="n">${esc(x.a.apelido)}</div><div class="v ${cls(x.v)}">${usd(x.v)}</div>${placaPill(x.a)}</div>` : "<div></div>";
-  const rows = rk.map((x, i) => {
-    const pp = prevPos(x.a.id), d = pp == null ? null : pp - (i + 1);
-    return `<tr class="${x.a.id === state.me ? "me" : ""}"><td><span class="rank">${i + 1}</span>${prevIdx.length ? mv(d) : ""}</td><td>${who(x.a)}</td><td>${placaPill(x.a)}</td><td class="r num ${cls(x.v)}">${usd(x.v)}</td></tr>`;
-  }).join("");
-  const nota = state.metrica === "lucro" ? `<span class="note">O % do copy é igual para todos; o lucro em US$ acompanha o tamanho da conta</span>` : `<span class="note">${rk.length} participantes</span>`;
-  return head + `
-    <div class="podium">${pod(top[1], 2)}${pod(top[0], 1)}${pod(top[2], 3)}</div>
-    <div class="card"><div class="card-head"><h3>${M.nome} · ${M.periodo ? P.nome : "atual"}</h3>${nota}</div>
-    <div class="table-wrap"><table><thead><tr><th>Pos.</th><th>Aluno</th><th>Quadro</th><th class="r">${M.col}</th></tr></thead><tbody>${rows}</tbody></table></div></div>`;
+  const pod = (x, n) => x ? `<div class="pod p${n}">${avatar(x.a)}<div class="pos">${n}º</div><div class="n">${esc(apelido(x.a))}</div><div class="v ${cls(x.v)}">${usd(x.v)}</div>${placaPill(x.a)}</div>` : "<div></div>";
+  const rows = rk.map((x, i) => { const pp = prevPos(x.a.id); return `<tr class="${x.a.id === meId ? "me" : ""}"><td><span class="rank">${i + 1}</span>${pp === undefined ? "" : mv(pp == null ? null : pp - (i + 1))}</td><td>${who(x.a)}</td><td>${placaPill(x.a)}</td><td class="r num ${cls(x.v)}">${usd(x.v)}</td></tr>`; }).join("");
+  return head + (rk.length ? `<div class="podium">${pod(rk[1], 2)}${pod(rk[0], 1)}${pod(rk[2], 3)}</div>` : "") + `
+    <div class="card"><div class="card-head"><h3>${M.nome} · ${M.periodo ? P.nome : "atual"}</h3><span class="note">${prevRk ? "setas: posição vs. 7 dias atrás · " : ""}${rk.length} participantes</span></div>
+    ${rk.length ? `<div class="table-wrap"><table><thead><tr><th>Pos.</th><th>Aluno</th><th>Quadro</th><th class="r">${M.col}</th></tr></thead><tbody>${rows}</tbody></table></div>` : `<div class="empty-state">Nenhum ${M.nome.toLowerCase()} neste período ainda.</div>`}</div>`;
 }
 
 function viewQuadros() {
-  const a = me();
-  const quadros = CONFIG.placas.filter(t => t.quadro);
+  const a = state.sess.role === "aluno" ? aluno(state.sess.id) : null, e = a ? estado(a.id) : null;
   return `
   <div class="card">
-    <div class="card-head"><div><h2>Os quadros da Legião</h2><div class="muted" style="font-size:.9rem">Cada nível de saldo na conta vira um quadro com o seu nome gravado.</div></div><span class="badge gold">Seu saldo: ${usd(a.saldo)}</span></div>
-    <div class="wall">${quadros.map((t, i) => {
-      const ok = a.saldo >= t.min, n = ALUNOS.filter(x => x.saldo >= t.min).length;
-      return `<figure>${plaque(t, { locked: !ok, nome: ok ? a.nome : "" })}
-        <figcaption><b>Nível ${i + 1} · ${t.nome}</b><span>${t.pedra} · US$ ${usdK(t.min)} na conta</span><span>quadro ${t.quadro}${t.filete ? " · filete dourado" : ""}</span>
-        ${ok ? '<span class="badge ok">Conquistado</span>' : `<span class="badge no">faltam ${usd(t.min - a.saldo)}</span>`}
-        <span class="note">${n} ${n === 1 ? "aluno já tem" : "alunos já têm"}</span></figcaption></figure>`;
+    <div class="card-head"><div><h2>Os quadros da Legião</h2><div class="muted" style="font-size:.9rem">Cada nível de saldo na conta vira um quadro com o seu nome gravado.</div></div>${e ? `<span class="badge gold">Seu saldo: ${usd(e.saldo)}</span>` : ""}</div>
+    <div class="wall">${CONFIG.placas.filter(t => t.quadro).map((t, i) => {
+      const ok = e && e.conq[t.id], n = DB.alunos.filter(x => estado(x.id).conq[t.id]).length;
+      return `<figure>${plaque(t, { locked: e && !ok, nome: ok ? a.nome : "" })}<figcaption><b>Nível ${i + 1} · ${t.nome}</b><span>${t.pedra} · US$ ${usdK(t.min)} na conta</span><span>quadro ${t.quadro}${t.filete ? " · filete dourado" : ""}</span>
+        ${e ? (ok ? `<span class="badge ok">Conquistado</span>` : `<span class="badge no">faltam ${usd(t.min - e.saldo)}</span>`) : ""}<span class="note">${n} ${n === 1 ? "aluno já tem" : "alunos já têm"}</span></figcaption></figure>`;
     }).join("")}</div>
   </div>
   <div class="card">
-    <div class="card-head"><div><h2>Prêmios por lucro</h2><div class="muted" style="font-size:.9rem">Liberados quando o lucro acumulado na conta passa da meta.</div></div><span class="num muted">seu lucro: ${usd(a.lucroTotal)}</span></div>
-    <div class="prize-list">${CONFIG.premios.map(p => {
-      const ok = a.lucroTotal >= p.meta, n = ALUNOS.filter(x => x.lucroTotal >= p.meta).length;
-      return `<div class="prize"><div class="meta">${usd(p.meta)}</div><div style="min-width:0"><div style="font-weight:700">${esc(p.nome)}</div><div class="note">${esc(p.detalhe)} · ${n} ${n === 1 ? "aluno conquistou" : "alunos conquistaram"}</div></div>${ok ? '<span class="badge ok">Conquistado</span>' : `<span class="badge no">faltam ${usd(p.meta - a.lucroTotal)}</span>`}</div>`;
-    }).join("")}</div>
+    <div class="card-head"><div><h2>Prêmios por lucro</h2><div class="muted" style="font-size:.9rem">Liberados quando o lucro acumulado (saldo menos o total aportado) passa da meta.</div></div>${e ? `<span class="num muted">seu lucro: ${usd(e.lucro)}</span>` : ""}</div>
+    <div class="prize-list">${CONFIG.premios.map(p => { const n = DB.alunos.filter(x => estado(x.id).prem[p.meta]).length, ok = e && e.prem[p.meta];
+      return `<div class="prize"><div class="meta">${usd(p.meta)}</div><div style="min-width:0"><div style="font-weight:700">${esc(p.nome)}</div><div class="note">${esc(p.detalhe)} · ${n} ${n === 1 ? "aluno conquistou" : "alunos conquistaram"}</div></div>${e ? (ok ? '<span class="badge ok">Conquistado</span>' : `<span class="badge no">faltam ${usd(p.meta - e.lucro)}</span>`) : ""}</div>`; }).join("")}</div>
   </div>`;
 }
 
 function viewHall() {
-  const ev = eventos().slice(0, 14);
-  const campeoes = CONFIG.meses.map((m, i) => ({ m: CONFIG.mesesLongos[i], x: ranking("aportes", [i])[0] })).filter(c => c.x).reverse();
-  let recApo = null;
-  ALUNOS.forEach(a => a.aportes.forEach((v, i) => { if (!recApo || v > recApo.v) recApo = { a, v, m: CONFIG.mesesLongos[i] }; }));
-  const maior = ALUNOS.slice().sort((x, y) => y.saldo - x.saldo)[0];
-  const seq = ALUNOS.slice().sort((x, y) => y.sequencia - x.sequencia || y.aportado - x.aportado)[0];
-  const quadros = ALUNOS.filter(a => a.saldo >= CONFIG.placas[1].min).length;
+  const ev = conquistas().slice(0, 14);
+  const meses = ultimosMeses(6).reverse().map(m => ({ m: MESES_L[m.m], x: ranking("aportes", { de: m.ini, ate: m.fim })[0] })).filter(c => c.x);
+  const recApo = DB.lanc.filter(l => l.tipo === "aporte" && !l.inicial).sort((x, y) => y.valor - x.valor)[0];
+  const maior = ranking("saldo", periodos().geral)[0];
+  const comQuadro = DB.alunos.filter(a => estado(a.id).conq[CONFIG.placas[1].id]).length;
   return `
-  <div class="grid g4">
-    <div class="card"><div class="eyebrow">Maior aporte em um mês</div><div class="stat"><div class="v" style="color:var(--gold)">${usd(recApo.v)}</div></div><div>${esc(recApo.a.nome)} <span class="muted">· ${recApo.m}</span></div></div>
-    <div class="card"><div class="eyebrow">Maior saldo da Legião</div><div class="stat"><div class="v">${usd(maior.saldo)}</div></div><div>${esc(maior.nome)} <span class="muted">· ${placaDe(maior.saldo).nome}</span></div></div>
-    <div class="card"><div class="eyebrow">Mais meses seguidos aportando</div><div class="stat"><div class="v">${seq.sequencia} meses</div></div><div>${esc(seq.nome)}</div></div>
-    <div class="card"><div class="eyebrow">Alunos com quadro</div><div class="stat"><div class="v">${quadros}</div></div><div class="muted">com US$ ${usdK(CONFIG.placas[1].min)}+ na conta</div></div>
+  <div class="grid g3">
+    <div class="card"><div class="eyebrow">Maior aporte</div><div class="stat"><div class="v" style="color:var(--gold)">${recApo ? usd(recApo.valor) : "—"}</div></div><div>${recApo ? esc(aluno(recApo.aluno)?.nome) + ` <span class="muted">· ${fmtData(recApo.data)}</span>` : ""}</div></div>
+    <div class="card"><div class="eyebrow">Maior saldo da Legião</div><div class="stat"><div class="v">${maior ? usd(maior.v) : "—"}</div></div><div>${maior ? esc(maior.a.nome) : ""}</div></div>
+    <div class="card"><div class="eyebrow">Alunos com quadro</div><div class="stat"><div class="v">${comQuadro}</div></div><div class="muted">com US$ ${usdK(CONFIG.placas[1].min)}+ na conta</div></div>
   </div>
   <div class="grid g2">
-    <div class="card">
-      <div class="card-head"><h3>Campeões de aporte do mês</h3></div>
-      <div class="feed">${campeoes.map(c => `<div class="feed-item" style="grid-template-columns:84px minmax(0,1fr) auto"><span class="rank" style="color:var(--gold);width:auto;font-size:1.1rem">${c.m}</span>${who(c.x.a)}<span class="num">${usd(c.x.v)}</span></div>`).join("")}</div>
-    </div>
-    <div class="card">
-      <div class="card-head"><h3>Conquistas recentes</h3><span class="chip live">ao vivo</span></div>
-      <div class="feed">${ev.map(e => `<div class="feed-item">${e.t ? `<span class="dot" style="--pc:${e.t.cor}"></span>` : `<svg viewBox="0 0 24 24" fill="none" stroke="${e.ap ? "var(--gold)" : "var(--up)"}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${e.ap ? '<path d="M12 19V5M5 12l7-7 7 7"/>' : ICON.campeonato}</svg>`}<div style="min-width:0"><b>${esc(e.a.apelido)}</b> ${e.txt}</div><span class="note">${CONFIG.meses[e.m]}</span></div>`).join("")}</div>
+    <div class="card"><div class="card-head"><h3>Campeões de aporte do mês</h3></div>
+      <div class="feed">${meses.map(c => `<div class="feed-item" style="grid-template-columns:96px minmax(0,1fr) auto"><span class="rank" style="color:var(--gold);width:auto;font-size:1.1rem">${c.m}</span>${who(c.x.a)}<span class="num">${usd(c.x.v)}</span></div>`).join("") || '<div class="note">Sem aportes nos últimos meses.</div>'}</div></div>
+    <div class="card"><div class="card-head"><h3>Conquistas recentes</h3></div>
+      <div class="feed">${ev.map(x => `<div class="feed-item">${x.t ? `<span class="dot" style="--pc:${x.t.cor}"></span>` : `<svg viewBox="0 0 24 24" fill="none" stroke="${x.ap ? "var(--gold)" : "var(--up)"}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${x.ap ? '<path d="M12 19V5M5 12l7-7 7 7"/>' : ICON.copa}</svg>`}<div style="min-width:0"><b>${esc(apelido(x.a))}</b> ${x.txt}</div><span class="note">${fmtData(x.data).slice(0, 5)}</span></div>`).join("")}</div></div>
+  </div>`;
+}
+
+/* =====================================================================
+   TELAS DO ADMINISTRADOR
+   ===================================================================== */
+function quadrosPendentes() {
+  const out = [];
+  DB.alunos.forEach(a => Object.entries(estado(a.id).conq).forEach(([pid, d]) => { const s = statusQuadro(a.id, pid); out.push({ a, t: CONFIG.placas.find(x => x.id === pid), data: d, status: s }); }));
+  return out.sort((x, y) => y.data.localeCompare(x.data));
+}
+function viewAdmin() {
+  const pend = DB.envios.filter(x => x.status === "pendente");
+  const rk = copa(), q = quadrosPendentes().filter(x => x.status !== "entregue");
+  const uc = ultimoCopy(), diasCopy = uc ? Math.round((new Date(HOJE) - new Date(uc.data)) / 864e5) : null;
+  const ult = DB.envios.filter(x => x.status !== "pendente").sort((x, y) => (y.decididoEm || "").localeCompare(x.decididoEm || "")).slice(0, 6);
+  return `
+  <div class="grid g4">
+    <a class="card stat" href="#aprovacoes"><div class="eyebrow">Aguardando aprovação</div><div class="v" style="color:var(--gold)">${pend.length}</div><div class="d muted">${pend.length ? usd(sum(pend.map(x => x.valor))) + " em comprovantes" : "nada pendente"}</div></a>
+    <a class="card stat" href="#copa"><div class="eyebrow">Aportado na Copa</div><div class="v">${usd(sum(rk.map(x => x.v)))}</div><div class="d muted">${rk.length} alunos na disputa</div></a>
+    <a class="card stat" href="#entregas"><div class="eyebrow">Quadros a entregar</div><div class="v">${q.length}</div><div class="d muted">${q.filter(x => x.status === "a_produzir").length} ainda não produzidos</div></a>
+    <a class="card stat" href="#alunos"><div class="eyebrow">Alunos</div><div class="v">${DB.alunos.length}</div><div class="d muted">saldo somado ${usd(sum(DB.alunos.map(a => estado(a.id).saldo)))}</div></a>
+  </div>
+  ${diasCopy == null || diasCopy > 25 ? `<div class="banner"><div><b>Lance o resultado do copy.</b> ${uc ? `O último foi em ${fmtData(uc.data)}.` : "Nenhum resultado lançado ainda."} Com ele, o saldo de todos os alunos atualiza de uma vez.</div><a class="btn sm" href="#copy">Lançar resultado</a></div>` : ""}
+  <div class="grid g2">
+    <div class="card"><div class="card-head"><h3>Próximos da fila</h3><a class="note" href="#aprovacoes">ver todos</a></div>
+      ${pend.length ? `<div class="feed">${pend.slice(0, 5).map(x => { const a = aluno(x.aluno); return `<div class="feed-item" style="grid-template-columns:minmax(0,1fr) auto">${who(a, "enviado em " + fmtData(x.enviadoEm))}<span class="num">${usd(x.valor)}</span></div>`; }).join("")}</div>` : `<div class="empty-state">Tudo aprovado.</div>`}</div>
+    <div class="card"><div class="card-head"><h3>Últimas decisões</h3></div>
+      ${ult.length ? `<div class="feed">${ult.map(x => { const a = aluno(x.aluno); return a ? `<div class="feed-item" style="grid-template-columns:minmax(0,1fr) auto auto">${who(a, fmtData(x.decididoEm))}<span class="num">${usd(x.valor)}</span>${statusPill(x.status)}</div>` : ""; }).join("")}</div>` : `<div class="empty-state">Nenhuma decisão ainda.</div>`}</div>
+  </div>`;
+}
+
+function viewAprovacoes() {
+  const filtro = state.filtroEnv || "pendente";
+  const lista = DB.envios.filter(x => filtro === "todos" || x.status === filtro).sort((x, y) => filtro === "pendente" ? x.enviadoEm.localeCompare(y.enviadoEm) : y.enviadoEm.localeCompare(x.enviadoEm));
+  const n = s => DB.envios.filter(x => x.status === s).length;
+  const seg = `<div class="seg" role="group" aria-label="Filtro">${[["pendente", `Em análise (${n("pendente")})`], ["aprovado", "Aprovados"], ["recusado", "Recusados"], ["todos", "Todos"]].map(([k, l]) => `<button data-filtroenv="${k}" aria-pressed="${k === filtro}">${l}</button>`).join("")}</div>`;
+  return `<div class="controls"><div><h2>Aprovação de aportes</h2><div class="muted" style="font-size:.9rem">Confira o print. Ao aprovar, o valor entra no saldo, nos rankings e na Copa na hora.</div></div>${seg}</div>
+  ${lista.length ? `<div class="queue">${lista.map(x => {
+    const a = aluno(x.aluno); if (!a) return "";
+    const e = estado(a.id), depois = e.saldo + (x.status === "pendente" ? x.valor : 0), nxQ = placaDe(estado(a.id).pico) !== placaDe(Math.max(e.pico, x.saldo ?? depois)) && x.status === "pendente";
+    return `<div class="q-item">
+      <img class="thumb" src="${x.img}" alt="Comprovante de ${esc(a.nome)}" data-act="zoom" data-id="${x.id}">
+      <div style="display:flex;flex-direction:column;gap:10px;min-width:0">
+        ${who(a, "Conta " + esc(a.conta || "—") + " · " + nomeCla(a))}
+        <dl><dt>Valor informado</dt><dd>${usd(x.valor)}</dd><dt>Data do depósito</dt><dd>${fmtData(x.data)}</dd><dt>Saldo informado</dt><dd>${x.saldo != null ? usd(x.saldo) : "—"}</dd><dt>Saldo hoje</dt><dd>${usd(e.saldo)}</dd><dt>Enviado em</dt><dd>${fmtData(x.enviadoEm)}</dd>${x.obs ? `<dt>Observação</dt><dd style="font-weight:500">${esc(x.obs)}</dd>` : ""}</dl>
+        ${nxQ ? `<div class="badge gold" style="align-self:flex-start">Com este aporte conquista o quadro ${placaDe(Math.max(e.pico, x.saldo ?? depois)).nome}</div>` : ""}
+      </div>
+      <div class="q-act">${x.status === "pendente" ? `
+        <div class="field"><label for="ap-val-${x.id}">Valor a creditar (US$)</label><input id="ap-val-${x.id}" class="inp" inputmode="decimal" value="${x.valor}"></div>
+        <div class="field"><label for="ap-sal-${x.id}">Saldo da conta após o depósito (US$)</label><input id="ap-sal-${x.id}" class="inp" inputmode="decimal" value="${x.saldo ?? ""}" placeholder="Opcional"></div>
+        <button class="btn ok" data-act="aprovar" data-id="${x.id}">Aprovar aporte</button>
+        <div class="field"><label for="ap-mot-${x.id}">Motivo da recusa</label><input id="ap-mot-${x.id}" class="inp" placeholder="Ex.: o print não mostra o valor"></div>
+        <button class="btn danger" data-act="recusar" data-id="${x.id}">Recusar</button>`
+      : `${statusPill(x.status)}<div class="note">Decidido em ${fmtData(x.decididoEm)}</div>${x.motivo ? `<div class="note">${esc(x.motivo)}</div>` : ""}${x.status === "aprovado" && x.valorAprovado != null && x.valorAprovado !== x.valor ? `<div class="note">Creditado: ${usd(x.valorAprovado)}</div>` : ""}`}
+      </div></div>`; }).join("")}</div>` : `<div class="card empty-state">${filtro === "pendente" ? "Nenhum comprovante esperando aprovação." : "Nada por aqui."}</div>`}`;
+}
+
+function viewAlunos() {
+  const q = (state.busca || "").toLowerCase();
+  const p = { de: C.inicio, ate: fimTemporada() };
+  const lista = DB.alunos.filter(a => !q || a.nome.toLowerCase().includes(q) || (a.conta || "").includes(q)).map(a => ({ a, e: estado(a.id), ap: aporteEntre(a.id, p.de, p.ate) })).sort((x, y) => y.e.saldo - x.e.saldo);
+  return `
+  <div class="controls"><h2>Alunos</h2><div class="row-actions"><input id="busca" class="inp" style="width:240px" placeholder="Buscar por nome ou conta" value="${esc(state.busca || "")}"><button class="btn primary" data-act="novo-aluno">Cadastrar aluno</button></div></div>
+  ${state.novoAluno ? formAluno() : ""}
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Aluno</th><th>Conta</th><th>Quadro</th><th class="r">Saldo</th><th class="r">Aportado total</th><th class="r">Na Copa</th></tr></thead><tbody>
+    ${lista.map(({ a, e, ap }) => `<tr class="click" data-act="abrir-aluno" data-id="${a.id}" tabindex="0"><td>${who(a)}</td><td>${esc(a.conta || "—")}</td><td>${placaPill(a)}</td><td class="r num">${usd(e.saldo)}</td><td class="r num">${usd(e.aportado)}</td><td class="r num">${ap ? usd(ap) : "—"}</td></tr>`).join("")}
+  </tbody></table></div>${lista.length ? "" : `<div class="empty-state">Nenhum aluno encontrado.</div>`}</div>`;
+}
+function formAluno(a) {
+  const ed = !!a; a = a || {};
+  return `<div class="card"><h3>${ed ? "Editar cadastro" : "Novo aluno"}</h3>
+    <form id="form-aluno" class="form-grid" data-id="${a.id || ""}" novalidate>
+      <div class="field"><label for="al-nome">Nome completo</label><input id="al-nome" value="${esc(a.nome || "")}" required></div>
+      <div class="field"><label for="al-cla">Clã</label><select id="al-cla">${Object.entries(CONFIG.clas).map(([k, c]) => `<option value="${k}" ${a.cla === k ? "selected" : ""}>${c.nome}</option>`).join("")}</select></div>
+      <div class="field"><label for="al-conta">Conta ${esc(CONFIG.marca.corretora)}</label><input id="al-conta" value="${esc(a.conta || "")}" inputmode="numeric"></div>
+      <div class="field"><label for="al-whats">WhatsApp</label><input id="al-whats" value="${esc(a.whatsapp || "")}" inputmode="tel"></div>
+      <div class="field"><label for="al-cidade">Cidade</label><input id="al-cidade" value="${esc(a.cidade || "")}"></div>
+      ${ed ? "" : `<div class="field"><label for="al-data">Data de entrada</label><input id="al-data" type="date" value="${HOJE}" max="${HOJE}"></div>
+      <div class="field"><label for="al-aportado">Total já aportado até hoje (US$)</label><input id="al-aportado" inputmode="decimal" placeholder="0"><small>Não conta para a Copa.</small></div>
+      <div class="field"><label for="al-saldo">Saldo atual da conta (US$)</label><input id="al-saldo" inputmode="decimal" placeholder="0"><small>A diferença para o aportado vira lucro.</small></div>`}
+      <div class="full row-actions"><button class="btn primary" type="submit">${ed ? "Salvar cadastro" : "Cadastrar aluno"}</button><button class="btn" type="button" data-act="${ed ? "fechar-edicao" : "fechar-novo"}">Cancelar</button><span class="note" id="al-msg"></span></div>
+    </form></div>`;
+}
+
+function viewAluno() {
+  const a = aluno(state.alunoSel); if (!a) return `<div class="card empty-state">Aluno não encontrado. <a href="#alunos">Voltar</a></div>`;
+  const e = estado(a.id), t = placaDe(e.pico), ls = DB.lanc.filter(l => l.aluno === a.id).sort((x, y) => y.data.localeCompare(x.data));
+  const envs = DB.envios.filter(x => x.aluno === a.id);
+  const TIPOS = { aporte: "Aporte", saque: "Saque", saldo: "Saldo corrigido" };
+  return `
+  <div class="controls"><div class="row-actions"><a class="btn sm" href="#alunos">← Alunos</a>${who(a)}</div><div class="row-actions"><button class="btn sm" data-act="editar-aluno">Editar cadastro</button><button class="btn sm" data-act="ver-como" data-id="${a.id}">Ver painel do aluno</button></div></div>
+  ${state.editAluno ? formAluno(a) : ""}
+  <div class="grid g4">
+    <div class="card stat"><div class="eyebrow">Saldo</div><div class="v">${usd(e.saldo)}</div><div class="d muted">quadro ${t.nome}</div></div>
+    <div class="card stat"><div class="eyebrow">Total aportado</div><div class="v">${usd(e.aportado)}</div><div class="d muted">na Copa ${usd(aporteEntre(a.id, C.inicio, fimTemporada()))}</div></div>
+    <div class="card stat"><div class="eyebrow">Lucro</div><div class="v ${e.lucro >= 0 ? "up" : "down"}">${usd(e.lucro)}</div><div class="d muted">${Object.keys(e.prem).length} prêmios</div></div>
+    <div class="card stat"><div class="eyebrow">Contato</div><div class="v" style="font-size:1rem">${esc(a.whatsapp || "sem WhatsApp")}</div><div class="d muted">conta ${esc(a.conta || "—")}</div></div>
+  </div>
+  <div class="grid g3">
+    <div class="card span2"><div class="card-head"><h3>Lançamentos</h3><span class="note">${envs.filter(x => x.status === "pendente").length} comprovante(s) em análise</span></div>
+      ${ls.length ? `<div class="table-wrap"><table><thead><tr><th>Data</th><th>Tipo</th><th class="r">Valor</th><th>Origem</th><th></th></tr></thead><tbody>
+      ${ls.map(l => `<tr><td>${fmtData(l.data)}</td><td>${TIPOS[l.tipo]}${l.inicial ? ' <span class="note">(cadastro)</span>' : ""}</td><td class="r num ${l.tipo === "saque" ? "down" : ""}">${l.tipo === "saque" ? "−" : ""}${usd(l.valor)}</td><td>${l.origem === "comprovante" ? `<button class="btn sm" data-act="zoom" data-id="${l.envio}">Comprovante</button>` : '<span class="note">Lançado pelo admin</span>'}</td>
+        <td class="r"><button class="btn sm danger" data-act="del-lanc" data-id="${l.id}">${state.confirmDel === l.id ? "Confirmar exclusão" : "Excluir"}</button></td></tr>`).join("")}
+      </tbody></table></div>` : `<div class="empty-state">Sem lançamentos.</div>`}</div>
+    <div class="card"><h3>Novo lançamento</h3>
+      <form id="form-lanc" class="form-grid" style="grid-template-columns:minmax(0,1fr)" novalidate>
+        <div class="field"><label for="lc-tipo">Tipo</label><select id="lc-tipo"><option value="aporte">Aporte (depósito)</option><option value="saque">Saque</option><option value="saldo">Corrigir saldo para o valor informado</option></select></div>
+        <div class="field"><label for="lc-valor">Valor (US$)</label><input id="lc-valor" inputmode="decimal" required></div>
+        <div class="field"><label for="lc-data">Data</label><input id="lc-data" type="date" value="${HOJE}" max="${HOJE}"></div>
+        <div class="row-actions"><button class="btn primary" type="submit">Lançar</button><span class="note" id="lc-msg"></span></div>
+      </form>
+      <div class="note">Use "Corrigir saldo" quando o aluno mandar um print do saldo atual. A diferença vira lucro (ou prejuízo).</div>
     </div>
   </div>`;
+}
+
+function viewCopy() {
+  const lista = DB.copy.slice().sort((x, y) => y.data.localeCompare(x.data));
+  const ativos = DB.alunos.filter(a => estado(a.id).saldo > 0).length;
+  return `
+  <div class="grid g3">
+    <div class="card"><h2>Lançar resultado do copy</h2>
+      <div class="muted" style="font-size:.9rem">Como a rentabilidade é igual para todos, você lança um número só e o saldo dos ${ativos} alunos atualiza de uma vez.</div>
+      <form id="form-copy" class="form-grid" style="grid-template-columns:minmax(0,1fr)" novalidate>
+        <div class="field"><label for="cp-pct">Resultado no período (%)</label><input id="cp-pct" inputmode="decimal" placeholder="Ex.: 4,6 ou -1,2" required></div>
+        <div class="field"><label for="cp-data">Data de fechamento</label><input id="cp-data" type="date" value="${HOJE}" max="${HOJE}"><small>Vale para o saldo que cada aluno tinha nessa data. Lance por semana ou por mês.</small></div>
+        <div class="row-actions"><button class="btn primary" type="submit">Aplicar a todos</button><span class="note" id="cp-msg"></span></div>
+      </form></div>
+    <div class="card span2"><div class="card-head"><h3>Histórico</h3><span class="note">${lista.length} lançamentos</span></div>
+      ${lista.length ? `<div class="table-wrap"><table><thead><tr><th>Fechamento</th><th class="r">Resultado</th><th class="r">Impacto na Legião</th><th></th></tr></thead><tbody>
+      ${lista.map(c => { const imp = sum(DB.alunos.map(a => estado(a.id, c.data).saldo - estado(a.id, addDias(c.data, -1)).saldo - aporteEntre(a.id, c.data, c.data, true))); return `<tr><td>${fmtData(c.data)}</td><td class="r num ${c.pct < 0 ? "down" : "up"}">${pct(c.pct)}</td><td class="r num ${imp < 0 ? "down" : "up"}">${imp >= 0 ? "+" : ""}${usd(imp)}</td><td class="r"><button class="btn sm danger" data-act="del-copy" data-id="${c.id}">${state.confirmDel === c.id ? "Confirmar exclusão" : "Excluir"}</button></td></tr>`; }).join("")}
+      </tbody></table></div>` : `<div class="empty-state">Nenhum resultado lançado.</div>`}</div>
+  </div>`;
+}
+
+function viewEntregas() {
+  const lista = quadrosPendentes(), f = state.filtroQ || "abertos";
+  const vis = lista.filter(x => f === "todos" || (f === "abertos" ? x.status !== "entregue" : x.status === f));
+  const seg = `<div class="seg" role="group" aria-label="Filtro">${[["abertos", "Em aberto"], ["entregue", "Entregues"], ["todos", "Todos"]].map(([k, l]) => `<button data-filtroq="${k}" aria-pressed="${k === f}">${l}</button>`).join("")}</div>`;
+  return `<div class="controls"><div><h2>Quadros conquistados</h2><div class="muted" style="font-size:.9rem">Quando um aluno passa de um nível, o quadro aparece aqui para produção e entrega.</div></div>${seg}</div>
+  <div class="card">${vis.length ? `<div class="table-wrap"><table><thead><tr><th>Aluno</th><th>Quadro</th><th>Conquistado em</th><th>Tamanho</th><th>Situação</th></tr></thead><tbody>
+    ${vis.map(x => `<tr><td>${who(x.a)}</td><td><span class="pill" style="--pc:${x.t.cor}"><i></i>${x.t.nome}</span></td><td>${fmtData(x.data)}</td><td>${x.t.quadro}</td>
+      <td><select class="inp sm" data-quadro="${x.a.id}:${x.t.id}" aria-label="Situação do quadro">${Object.entries(STATUS_Q).map(([k, l]) => `<option value="${k}" ${k === x.status ? "selected" : ""}>${l}</option>`).join("")}</select></td></tr>`).join("")}
+  </tbody></table></div>` : `<div class="empty-state">Nenhum quadro ${f === "abertos" ? "pendente de entrega" : "aqui"}.</div>`}</div>`;
+}
+
+/* =====================================================================
+   LOGIN (demonstração: escolhe o perfil, sem senha)
+   ===================================================================== */
+function viewLogin() {
+  const opts = DB.alunos.slice().sort((x, y) => x.nome.localeCompare(y.nome)).map(a => `<option value="${a.id}" ${a.id === "a33" ? "selected" : ""}>${esc(a.nome)}</option>`).join("");
+  return `<div class="login"><div class="login-card">
+    <div class="login-mark">${LOGO("var(--gold)", "Legatus Group")}<b>${CONFIG.marca.nome}</b><div class="muted" style="font-size:.9rem">${esc(CONFIG.marca.comunidade)}</div></div>
+    <div class="field"><label for="lg-perfil">Entrar como</label><select id="lg-perfil"><option value="admin">Administrador</option><optgroup label="Alunos">${opts}</optgroup></select></div>
+    <button class="btn primary" data-act="entrar">Entrar</button>
+    <div class="note" style="text-align:center">Modo demonstração: não pede senha e os dados ficam salvos só neste navegador.</div>
+  </div></div>`;
 }
 
 /* =====================================================================
    NAVEGAÇÃO
    ===================================================================== */
+const ICON = {
+  painel: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  enviar: '<path d="M12 16V4M6 10l6-6 6 6M4 20h16"/>',
+  envios: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  copa: '<path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 21h8"/>',
+  ranking: '<path d="M8 21V10M16 21V4M12 21v-7M4 21h16"/>',
+  quadros: '<rect x="4" y="3" width="16" height="18" rx="1"/><rect x="8" y="7" width="8" height="8"/>',
+  hall: '<path d="M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z"/>',
+  admin: '<path d="M3 3h7v9H3zM14 3h7v5h-7zM14 12h7v9h-7zM3 16h7v5H3z"/>',
+  aprovacoes: '<path d="M9 12l2 2 4-4M5 4h14v16H5z"/>',
+  alunos: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
+  copy: '<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',
+  entregas: '<path d="M21 8l-9-5-9 5v8l9 5 9-5zM3 8l9 5 9-5M12 13v8"/>'
+};
+const VIEWS = {
+  aluno: { painel: ["Meu painel", viewPainel], enviar: ["Informar aporte", viewEnviar], envios: ["Meus envios", viewEnvios], copa: ["Copa dos Aportes", viewCopa], ranking: ["Rankings", viewRanking], quadros: ["Quadros e prêmios", viewQuadros], hall: ["Hall da fama", viewHall] },
+  admin: { admin: ["Visão geral", viewAdmin], aprovacoes: ["Aprovações", viewAprovacoes], alunos: ["Alunos", viewAlunos], copy: ["Resultado do copy", viewCopy], entregas: ["Quadros", viewEntregas], copa: ["Copa dos Aportes", viewCopa], ranking: ["Rankings", viewRanking], hall: ["Hall da fama", viewHall], aluno: ["Aluno", viewAluno] }
+};
+const NAV_OCULTO = ["aluno"];
+const state = { sess: null, view: "", metrica: "aportes", periodo: "temporada" };
+try { const s = JSON.parse(localStorage.getItem("legatus-sessao") || "null"); if (s) state.sess = s; } catch (e) {}
+if (!state.sess) state.sess = { role: "admin" };
+const salvaSessao = () => { try { localStorage.setItem("legatus-sessao", JSON.stringify(state.sess)); } catch (e) {} };
+
+let toastT;
+function toast(msg) { clearTimeout(toastT); const o = document.getElementById("overlay"); o.querySelector(".toast")?.remove(); o.insertAdjacentHTML("beforeend", `<div class="toast" role="status">${esc(msg)}</div>`); toastT = setTimeout(() => o.querySelector(".toast")?.remove(), 4000); }
+
 let timer;
 function tick() {
   const el = document.getElementById("countdown"); if (!el) return;
-  let s = Math.max(0, (new Date(C.fim) - new Date()) / 1000);
+  let s = Math.max(0, (new Date(C.fim + "T23:59:00") - new Date()) / 1000);
   const d = Math.floor(s / 86400); s -= d * 86400; const h = Math.floor(s / 3600); s -= h * 3600; const m = Math.floor(s / 60);
-  el.innerHTML = [[d, "dias"], [h, "horas"], [m, "min"]].map(([v, l]) => `<div><b>${String(v).padStart(2, "0")}</b><span>${l}</span></div>`).join("");
+  el.innerHTML = [[d, "dias"], [h, "horas"], [m, "min"]].map(([v, l]) => `<div><b>${pad(v)}</b><span>${l}</span></div>`).join("");
 }
+
 function render() {
-  const v = document.getElementById("view");
-  const fn = { painel: viewPainel, campeonato: viewCampeonato, ranking: viewRanking, quadros: viewQuadros, hall: viewHall }[state.view];
-  v.innerHTML = fn();
-  v.classList.remove("view-enter"); void v.offsetWidth; v.classList.add("view-enter");
-  document.querySelectorAll(".nav a").forEach(a => { const on = a.dataset.v === state.view; a.setAttribute("aria-current", on ? "page" : "false"); if (on && innerWidth <= 820) a.scrollIntoView({ block: "nearest", inline: "nearest" }); });
-  document.getElementById("crumb").innerHTML = `${VIEWS[state.view]} <span>· ${esc(me().nome)}</span>`;
-  clearInterval(timer); if (state.view === "campeonato") { tick(); timer = setInterval(tick, 30000); }
+  const root = document.getElementById("root");
+  if (state.sess.role === "login" || (state.sess.role === "aluno" && !aluno(state.sess.id))) { root.innerHTML = viewLogin(); return; }
+  const V = VIEWS[state.sess.role];
+  if (!V[state.view]) state.view = Object.keys(V)[0];
+  const pend = DB.envios.filter(x => x.status === "pendente").length;
+  const qAbertos = quadrosPendentes().filter(x => x.status === "a_produzir").length;
+  const me = state.sess.role === "aluno" ? aluno(state.sess.id) : null;
+  const nav = Object.entries(V).filter(([k]) => !NAV_OCULTO.includes(k)).map(([k, [n]]) => {
+    const cnt = state.sess.role === "admin" && k === "aprovacoes" && pend ? `<span class="count">${pend}</span>` : state.sess.role === "admin" && k === "entregas" && qAbertos ? `<span class="count">${qAbertos}</span>` : "";
+    const grp = state.sess.role === "admin" && k === "copa" ? `<div class="grp">Comunidade</div>` : "";
+    return `${grp}<a href="#${k}" data-v="${k}" aria-current="${k === state.view || (k === "alunos" && state.view === "aluno") ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>${n}${cnt}</a>`;
+  }).join("");
+  const perfil = me ? `${avatar(me)}<div style="min-width:0"><div style="font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(me.nome)}</div><small>Aluno · ${nomeCla(me)}</small></div>` : `<span class="avatar" style="background:#9c7420">AD</span><div><div style="font-weight:600">Administração</div><small>${esc(CONFIG.marca.comunidade)}</small></div>`;
+  root.innerHTML = `<div class="app">
+    <aside class="side">
+      <div class="brand">${LOGO("#f1d58c", "Legatus Group")}<div><b>${CONFIG.marca.nome}</b><span>${CONFIG.marca.sub}</span></div></div>
+      <nav class="nav" aria-label="Seções">${nav}</nav>
+      <div class="side-foot"><span class="demo-tag">Modo demonstração</span><div class="who-box">${perfil}</div><button class="link-btn" data-act="sair">Trocar de perfil</button></div>
+    </aside>
+    <main>
+      <div class="topbar"><div class="crumb">${state.view === "aluno" && aluno(state.alunoSel) ? "Alunos" : V[state.view][0]}${me ? ` <span>· ${esc(me.nome)}</span>` : state.view === "aluno" && aluno(state.alunoSel) ? ` <span>· ${esc(aluno(state.alunoSel).nome)}</span>` : " <span>· Administração</span>"}</div>
+        <div class="row-actions"><button class="btn sm mobile-only" data-act="sair">Trocar de perfil</button><span class="chip live">Hoje, ${fmtData(HOJE)}</span></div></div>
+      <section id="view" class="grid view-enter">${V[state.view][1]()}</section>
+    </main></div>`;
+  document.querySelector(`.nav a[aria-current="page"]`)?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  clearInterval(timer); if (state.view === "copa") { tick(); timer = setInterval(tick, 30000); }
 }
-function boot() {
-  document.getElementById("brand").innerHTML = `${LOGO("#f1d58c", "Legatus Group")}<div><b>${esc(CONFIG.marca.nome)}</b><span>${esc(CONFIG.marca.sub)}</span></div>`;
-  document.getElementById("nav").innerHTML = Object.entries(VIEWS).map(([k, n]) => `<a href="#${k}" data-v="${k}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>${n}</a>`).join("");
-  const opts = ALUNOS.slice().sort((x, y) => x.nome.localeCompare(y.nome)).map(a => `<option value="${a.id}">${esc(a.nome)}</option>`).join("");
-  ["viewas", "viewas-m"].forEach(id => { const s = document.getElementById(id); s.innerHTML = opts; s.value = state.me; s.addEventListener("change", e => { state.me = e.target.value; document.querySelectorAll("#viewas,#viewas-m").forEach(o => o.value = state.me); save(); render(); }); });
-  document.getElementById("updated").textContent = "Atualizado em " + new Date(CONFIG.atualizadoEm + "T12:00:00").toLocaleDateString("pt-BR");
-  document.getElementById("view").addEventListener("click", e => {
-    const b = e.target.closest("[data-metrica],[data-periodo]"); if (!b) return;
-    if (b.dataset.metrica) state.metrica = b.dataset.metrica;
-    if (b.dataset.periodo) state.periodo = b.dataset.periodo;
-    save(); render();
+function go(view) { if (location.hash === "#" + view) { fromHash(); } else location.hash = view; }
+function fromHash() {
+  let h = location.hash.slice(1);
+  if (h.startsWith("aluno-")) { state.alunoSel = h.slice(6); h = "aluno"; state.editAluno = false; }
+  state.view = h; state.confirmDel = null; render(); window.scrollTo(0, 0);
+}
+
+/* =====================================================================
+   AÇÕES
+   ===================================================================== */
+function comprimir(file) {
+  return new Promise((res, rej) => {
+    if (!file || !file.type.startsWith("image/")) return rej(new Error("Escolha uma imagem (JPG ou PNG)."));
+    const r = new FileReader();
+    r.onerror = () => rej(new Error("Não foi possível ler a imagem."));
+    r.onload = () => { const img = new Image(); img.onerror = () => rej(new Error("Imagem inválida.")); img.onload = () => {
+      const k = Math.min(1, 1100 / Math.max(img.width, img.height)); const c = document.createElement("canvas");
+      c.width = Math.round(img.width * k); c.height = Math.round(img.height * k); const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height);
+      res(c.toDataURL("image/jpeg", .72)); }; img.src = r.result; };
+    r.readAsDataURL(file);
   });
-  const fromHash = () => { const h = location.hash.slice(1); state.view = VIEWS[h] ? h : "painel"; render(); window.scrollTo(0, 0); };
-  window.addEventListener("hashchange", fromHash);
-  fromHash();
 }
-boot();
+let printAtual = null;
+async function usarArquivo(file) {
+  const msg = document.getElementById("env-msg");
+  try { printAtual = await comprimir(file); const im = document.getElementById("drop-img"); im.src = printAtual; im.hidden = false; document.getElementById("drop-txt").innerHTML = '<span class="note">Toque para trocar o print</span>'; msg.textContent = ""; }
+  catch (err) { printAtual = null; msg.textContent = err.message; }
+}
+
+document.addEventListener("change", e => {
+  if (e.target.id === "env-file") usarArquivo(e.target.files[0]);
+  if (e.target.dataset.quadro) { DB.quadros[e.target.dataset.quadro] = { status: e.target.value, em: HOJE }; save(); toast("Situação do quadro atualizada: " + STATUS_Q[e.target.value]); render(); }
+});
+document.addEventListener("input", e => { if (e.target.id === "busca") { state.busca = e.target.value; const pos = e.target.selectionStart; render(); const b = document.getElementById("busca"); b.focus(); b.setSelectionRange(pos, pos); } });
+["dragover", "dragleave", "drop"].forEach(t => document.addEventListener(t, e => {
+  const d = e.target.closest?.("#drop"); if (!d) return; e.preventDefault();
+  d.classList.toggle("over", t === "dragover"); if (t === "drop" && e.dataTransfer.files[0]) usarArquivo(e.dataTransfer.files[0]);
+}));
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") document.querySelector(".lightbox")?.remove();
+  if (e.key === "Enter" && e.target.matches("tr.click")) e.target.click();
+});
+
+document.addEventListener("submit", async e => {
+  e.preventDefault();
+  const f = e.target;
+  if (f.id === "form-envio") {
+    const msg = document.getElementById("env-msg"), valor = num(f.querySelector("#env-valor").value), data = f.querySelector("#env-data").value;
+    const sRaw = f.querySelector("#env-saldo").value.trim(), saldo = sRaw ? num(sRaw) : null;
+    if (!(valor > 0)) return msg.textContent = "Informe o valor depositado.";
+    if (!data || data > HOJE) return msg.textContent = "Informe uma data até hoje.";
+    if (sRaw && !(saldo >= 0)) return msg.textContent = "O saldo informado não é um número válido.";
+    if (!printAtual) return msg.textContent = "Anexe o print do comprovante.";
+    DB.envios.push({ id: uid("e"), aluno: state.sess.id, valor, data, saldo, obs: f.querySelector("#env-obs").value.trim(), img: printAtual, status: "pendente", enviadoEm: HOJE });
+    if (!save()) { DB.envios.pop(); return; }
+    printAtual = null; toast("Comprovante enviado. Assim que for aprovado, entra no seu saldo e na Copa."); go("envios");
+  }
+  if (f.id === "form-aluno") {
+    const msg = document.getElementById("al-msg"), nome = f.querySelector("#al-nome").value.trim();
+    if (nome.split(/\s+/).length < 2) return msg.textContent = "Informe nome e sobrenome.";
+    const dados = { nome, cla: f.querySelector("#al-cla").value, conta: f.querySelector("#al-conta").value.trim(), whatsapp: f.querySelector("#al-whats").value.trim(), cidade: f.querySelector("#al-cidade").value.trim() };
+    if (f.dataset.id) { Object.assign(aluno(f.dataset.id), dados); state.editAluno = false; save(); toast("Cadastro atualizado."); return render(); }
+    const data = f.querySelector("#al-data").value || HOJE, ap = num(f.querySelector("#al-aportado").value || "0"), sal = num(f.querySelector("#al-saldo").value || "0");
+    if (!(ap >= 0) || !(sal >= 0)) return msg.textContent = "Valores de aporte e saldo precisam ser números.";
+    const id = uid("a"); DB.alunos.push({ id, ...dados, criadoEm: HOJE });
+    if (ap > 0) DB.lanc.push({ id: uid("l"), aluno: id, tipo: "aporte", valor: ap, data, origem: "admin", inicial: true });
+    if (sal > 0 && Math.abs(sal - ap) >= 0.01) DB.lanc.push({ id: uid("l"), aluno: id, tipo: "saldo", valor: sal, data, origem: "admin", inicial: true });
+    state.novoAluno = false; save(); toast(`${nome} cadastrado.`); go("aluno-" + id);
+  }
+  if (f.id === "form-lanc") {
+    const msg = document.getElementById("lc-msg"), tipo = f.querySelector("#lc-tipo").value, valor = num(f.querySelector("#lc-valor").value), data = f.querySelector("#lc-data").value || HOJE;
+    if (!(valor > 0) && !(tipo === "saldo" && valor === 0)) return msg.textContent = "Informe um valor válido.";
+    DB.lanc.push({ id: uid("l"), aluno: state.alunoSel, tipo, valor, data, origem: "admin" }); save();
+    toast({ aporte: "Aporte lançado.", saque: "Saque lançado.", saldo: "Saldo corrigido." }[tipo]); render();
+  }
+  if (f.id === "form-copy") {
+    const msg = document.getElementById("cp-msg"), p = num(f.querySelector("#cp-pct").value), data = f.querySelector("#cp-data").value || HOJE;
+    if (!isFinite(p) || Math.abs(p) > 100) return msg.textContent = "Informe o resultado em %, por exemplo 4,6.";
+    const antes = sum(DB.alunos.map(a => estado(a.id).saldo));
+    const ex = DB.copy.find(c => c.data === data); if (ex) ex.pct = p; else DB.copy.push({ id: uid("c"), data, pct: p });
+    save(); const dif = sum(DB.alunos.map(a => estado(a.id).saldo)) - antes;
+    toast(`Resultado ${pct(p)} aplicado. Saldo da Legião ${dif >= 0 ? "+" : ""}${usd(dif)}.`); render();
+  }
+});
+
+document.addEventListener("click", e => {
+  const lb = e.target.closest(".lightbox"); if (lb) return lb.remove();
+  const b = e.target.closest("[data-act],[data-metrica],[data-periodo],[data-filtroenv],[data-filtroq]"); if (!b) return;
+  if (b.dataset.metrica) { state.metrica = b.dataset.metrica; return render(); }
+  if (b.dataset.periodo) { state.periodo = b.dataset.periodo; return render(); }
+  if (b.dataset.filtroenv) { state.filtroEnv = b.dataset.filtroenv; return render(); }
+  if (b.dataset.filtroq) { state.filtroQ = b.dataset.filtroq; return render(); }
+  const id = b.dataset.id;
+  switch (b.dataset.act) {
+    case "zoom": { const x = DB.envios.find(v => v.id === id); if (x) document.getElementById("overlay").insertAdjacentHTML("beforeend", `<div class="lightbox" role="dialog" aria-label="Comprovante"><img src="${x.img}" alt="Comprovante"></div>`); break; }
+    case "aprovar": {
+      const x = DB.envios.find(v => v.id === id), valor = num(document.getElementById("ap-val-" + id).value), sRaw = document.getElementById("ap-sal-" + id).value.trim(), saldo = sRaw ? num(sRaw) : null;
+      if (!(valor > 0)) return toast("Informe o valor a creditar.");
+      if (sRaw && !(saldo >= 0)) return toast("O saldo informado não é um número válido.");
+      const a = aluno(x.aluno), antes = placaDe(estado(a.id).pico), posAntes = copa().findIndex(r => r.a.id === a.id) + 1;
+      DB.lanc.push({ id: uid("l"), aluno: x.aluno, tipo: "aporte", valor, data: x.data, origem: "comprovante", envio: x.id });
+      if (saldo != null) DB.lanc.push({ id: uid("l"), aluno: x.aluno, tipo: "saldo", valor: saldo, data: x.data, origem: "comprovante", envio: x.id });
+      Object.assign(x, { status: "aprovado", decididoEm: HOJE, valorAprovado: valor }); save();
+      const depois = placaDe(estado(a.id).pico), posDepois = copa().findIndex(r => r.a.id === a.id) + 1;
+      toast(`Aprovado: ${usd(valor)} para ${a.nome.split(" ")[0]}.` + (depois !== antes ? ` Conquistou o quadro ${depois.nome}!` : "") + (posDepois && posDepois !== posAntes ? ` Agora em ${posDepois}º na Copa.` : ""));
+      render(); break;
+    }
+    case "recusar": {
+      const x = DB.envios.find(v => v.id === id), motivo = document.getElementById("ap-mot-" + id).value.trim();
+      if (!motivo) { toast("Escreva o motivo da recusa para o aluno saber o que corrigir."); document.getElementById("ap-mot-" + id).focus(); return; }
+      Object.assign(x, { status: "recusado", motivo, decididoEm: HOJE }); save(); toast("Comprovante recusado. O aluno vê o motivo em Meus envios."); render(); break;
+    }
+    case "novo-aluno": state.novoAluno = true; render(); document.getElementById("al-nome")?.focus(); break;
+    case "fechar-novo": state.novoAluno = false; render(); break;
+    case "editar-aluno": state.editAluno = true; render(); break;
+    case "fechar-edicao": state.editAluno = false; render(); break;
+    case "abrir-aluno": go("aluno-" + id); break;
+    case "ver-como": state.sess = { role: "aluno", id }; salvaSessao(); go("painel"); break;
+    case "del-lanc": case "del-copy": {
+      if (state.confirmDel !== id) { state.confirmDel = id; return render(); }
+      if (b.dataset.act === "del-lanc") DB.lanc = DB.lanc.filter(l => l.id !== id); else DB.copy = DB.copy.filter(c => c.id !== id);
+      state.confirmDel = null; save(); toast("Excluído."); render(); break;
+    }
+    case "sair": state.sess = { role: "login" }; salvaSessao(); render(); break;
+    case "entrar": { const v = document.getElementById("lg-perfil").value; state.sess = v === "admin" ? { role: "admin" } : { role: "aluno", id: v }; salvaSessao(); go(v === "admin" ? "admin" : "painel"); break; }
+  }
+});
+
+load();
+window.addEventListener("hashchange", fromHash);
+fromHash();
 </script>

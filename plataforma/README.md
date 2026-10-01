@@ -1,45 +1,48 @@
-# Legião Legatus: plataforma de evolução dos alunos do copy trade
+# Legião Legatus: portal do aluno e painel de administração
 
-Site da Legatus Group FX onde cada aluno acompanha a própria evolução e disputa com os outros. Tudo em dólar (US$).
+Portal da Legatus Group FX (copy trade na RoboForex). Todos os valores em dólar (US$).
 
-Abra `index.html` no navegador para ver funcionando com dados de exemplo. É um arquivo só, sem instalação.
+Abra `index.html` no navegador. Na tela de entrada, escolha **Administrador** ou um aluno.
+Modo demonstração: não pede senha e os dados ficam salvos só no navegador de quem abriu.
 
-## A lógica da disputa
+## Como os dados se atualizam
 
-No copy trade a rentabilidade é a mesma para todos, então a competição é por **aporte** e por **saldo na conta**:
+O sistema não guarda "a placa do aluno". Ele guarda **lançamentos com data** e calcula o resto:
 
-- **Quadros (placas) pelo saldo na conta:** Smart Move US$ 10K (Esmeralda), On Track US$ 25K (Safira), Momentum US$ 50K (Rubi), Next Millionaire US$ 100K (Ametista) e Millionaire US$ 200K (Ônix).
-- **Prêmios pelo lucro acumulado.**
-- **Copa dos Aportes:** campeonato por temporada. Vence quem fizer o maior aporte líquido (depósitos menos saques).
-- **Duelos 1x1** entre vizinhos de classificação, mostrando quanto falta para virar.
-- **Guerra de Clãs** pelo aporte somado dos membros.
+| De onde vem | Quem faz | Efeito |
+|---|---|---|
+| **Comprovante de aporte** | O aluno envia o print do depósito na RoboForex; o admin aprova | Entra como aporte no saldo, nos rankings e na Copa |
+| **Resultado do copy** | O admin lança um % por semana ou por mês | Atualiza o saldo de **todos** os alunos de uma vez (a rentabilidade é igual para todos) |
+| **Lançamento manual** | O admin, na ficha do aluno | Aporte, saque ou correção de saldo (quando o aluno manda print do saldo atual) |
+| **Cadastro** | O admin cadastra o aluno com total já aportado e saldo atual | Ponto de partida; não conta para a Copa |
 
-## Telas
+Saldo = aportes − saques, corrigido pelos resultados do copy e pelas correções de saldo.
+Lucro = saldo − total aportado. Quadro = maior saldo já atingido.
 
-| Tela | O que mostra |
-|---|---|
-| **Meu painel** | Quadro atual com o nome do aluno, barra até o próximo quadro, saldo, aporte na Copa, lucro, resultado do copy no mês, **"Sua disputa na Copa"** (quanto aportar para passar quem está na frente), gráficos de saldo e de aportes. |
-| **Copa dos Aportes** | Contagem regressiva, premiação, classificação, regras, duelos e clãs. |
-| **Rankings** | Aportes, Saldo na conta, Lucro e Clãs, com filtro por mês, temporada ou geral. |
-| **Quadros e prêmios** | Os 5 quadros, quais o aluno já conquistou, quanto falta e quantos alunos já têm cada um. Lista de prêmios por lucro. |
-| **Hall da fama** | Recordes, campeões de aporte de cada mês e feed de conquistas. |
+## Telas do aluno
 
-## Como personalizar
+- **Meu painel:** quadro atual, quanto falta para o próximo, saldo, lucro, posição na Copa e quanto aportar para passar o próximo.
+- **Informar aporte:** valor, data, saldo após o depósito (opcional) e o print.
+- **Meus envios:** situação de cada comprovante (em análise, aprovado ou recusado com o motivo).
+- **Copa dos Aportes, Rankings, Quadros e prêmios, Hall da fama.**
 
-Tudo fica no começo do `<script>` em `index.html`:
+## Telas do administrador
 
-- `CONFIG.placas`: nome, valor mínimo, pedra, cor, frase e tamanho de cada quadro.
-- `CONFIG.premios`: meta de lucro e prêmio.
-- `CONFIG.campeonato`: nome, meses que contam, data de encerramento, aporte mínimo, premiação e regras.
-- `CONFIG.clas`: nome e cor de cada clã.
-- `ALUNOS`: um registro por aluno, com `aportes` e `lucro` mês a mês em US$ (e `saques`, opcional).
+- **Visão geral:** comprovantes pendentes, total aportado na Copa, quadros a entregar e aviso para lançar o resultado do copy.
+- **Aprovações:** fila de comprovantes com o print ampliável. Dá para ajustar o valor antes de aprovar, informar o saldo, ou recusar com motivo.
+- **Alunos:** busca, cadastro e ficha de cada aluno com todos os lançamentos.
+- **Resultado do copy:** lança o % do período e mostra o impacto no saldo da Legião.
+- **Quadros:** quem conquistou cada quadro e a situação (a produzir, em produção, enviado, entregue).
 
-Os alunos e valores atuais são **fictícios**, só para demonstração.
+## Personalizar
 
-## Próximos passos para colocar no ar
+No começo do `<script>` em `index.html`, em `CONFIG`: quadros, prêmios, datas e premiação da Copa e clãs.
 
-1. **Dados reais:** puxar saldo, depósitos e saques da corretora/plataforma de copy (MT4/MT5, myfxbook) ou de uma planilha Google.
-2. **Login:** cada aluno vê o próprio painel. O seletor "Ver painel como" existe só no modo demonstração.
-3. **Hospedagem:** arquivo estático, pode ir para GitHub Pages, Netlify ou Vercel.
-4. **Privacidade (LGPD):** pedir consentimento para mostrar nome e valores, ou exibir só apelido.
-5. **Comunicação:** não prometer rentabilidade; resultados passados não garantem resultados futuros.
+## Para colocar no ar com os alunos
+
+A demonstração guarda tudo no navegador. Para uso real, falta:
+
+1. **Banco de dados e login** (por exemplo Supabase, que tem plano gratuito): cada aluno entra com e-mail e senha e só vê o próprio painel e envios; só o admin aprova.
+2. **Armazenamento dos prints** no mesmo serviço.
+3. **Hospedagem** do site (Netlify, Vercel ou GitHub Pages) com domínio próprio.
+4. **Aviso de privacidade (LGPD)** para mostrar nome e valores no ranking.
